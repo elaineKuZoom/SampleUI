@@ -536,7 +536,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     sessionContext.sessionPassword    = _passwordTF.text;
     sessionContext.audioOption     = audioOption;
     sessionContext.videoOption     = videoOption;
-    sessionContext.token           = self.tokenTF.text.length > 0 ? self.tokenTF.text : kAppToken;
+    sessionContext.token           = self.tokenTF.text.length > 0 ? self.tokenTF.text : [SampleUIBootstrap defaultAppToken];
 //    sessionContext.preProcessorDelegate = self.preProcesser;
 //    sessionContext.externalVideoSourceDelegate  = self.picAdapter;
 //    sessionContext.virtualAudioMicDelegate = self.virtualMic;
