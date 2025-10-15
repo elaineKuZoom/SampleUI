@@ -6,6 +6,16 @@
 
 @implementation SampleUIBootstrap
 
+static NSString *_defaultAppToken = nil;
+
++ (void)setDefaultAppToken:(NSString *)token {
+    _defaultAppToken = token;
+}
+
++ (NSString *)defaultAppToken {
+    return _defaultAppToken;
+}
+
 + (void)configureWithDomain:(NSString *)domain
                  appGroupId:(NSString *)appGroupId
                   enableLog:(BOOL)enableLog

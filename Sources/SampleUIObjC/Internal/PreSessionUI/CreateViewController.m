@@ -473,7 +473,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 - (void)onCreateClicked:(UIButton *)sender {
     if (self.steamingJoinTF.text.length != 0) {
         ZoomVideoSDKStreamingJoinContext *streamingJoinContext = [[ZoomVideoSDKStreamingJoinContext alloc]init];
-        streamingJoinContext.token = self.tokenTF.text.length > 0 ? self.tokenTF.text : kAppToken;
+        streamingJoinContext.token = self.tokenTF.text.length > 0 ? self.tokenTF.text : [SampleUIBootstrap defaultAppToken];
         streamingJoinContext.channelID = self.steamingJoinTF.text;
 
         ZoomVideoSDKBroadcastStreamingViewerHelper *steamingViewerHelper =  [[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper];
