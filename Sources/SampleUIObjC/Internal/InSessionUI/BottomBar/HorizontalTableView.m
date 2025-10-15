@@ -6,6 +6,7 @@
 //  Copyright © Zoom Communications, Inc. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import "HorizontalTableView.h"
 
 @implementation HorizontalTableView
