@@ -7,7 +7,7 @@
 //
 
 #import "BaseNavigationController.h"
-#import "UIViewController+LGSideMenuController.h"
+#import "Vender/LGSideMenuController/UIViewController+LGSideMenuController.h"
 
 @interface BaseNavigationController ()
 
