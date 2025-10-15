@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
   name: "SampleUI",
+  defaultLocalization: "en",
   platforms: [.iOS(.v13)],
   products: [.library(name: "SampleUI", targets: ["SampleUI"])],
   targets: [
@@ -18,15 +19,25 @@ let package = Package(
       checksum: "14d5037a0409883c13d86e49d8b91b244852904263a87a6ba0bdf6d5fb698cc4"
     ),
     .target(
-      name: "SampleUI",
+      name: "SampleUIObjC",
       dependencies: [
         "ZoomVideoSDK",
-        "CptShare"
+        "CptShare",
       ],
-      path: "Sources/SampleUI",
+      path: "Sources/SampleUIObjC",
       publicHeadersPath: "include",
-      resources: [.process("Resources")],
-      cSettings: [.headerSearchPath("Internal"), .define("SWIFT_PACKAGE")]
+      cSettings: [
+        .headerSearchPath("Internal"),
+        .define("SWIFT_PACKAGE")
+      ]
+    ),
+
+    // Swift wrapper owns Resources
+    .target(
+      name: "SampleUI",
+      dependencies: ["SampleUIObjC"],
+      path: "Sources/SampleUI",
+      resources: [.process("Resources")]
     )
   ]
 )
