@@ -27,6 +27,7 @@
 //  SOFTWARE.
 //
 
+#import "SampleUI.h"
 #import <objc/runtime.h>
 
 #import "LGSideMenuController.h"

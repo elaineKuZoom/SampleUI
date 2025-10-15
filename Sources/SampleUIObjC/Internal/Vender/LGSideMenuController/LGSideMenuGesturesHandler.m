@@ -27,6 +27,7 @@
 //  SOFTWARE.
 //
 
+#import "SampleUI.h"
 #import "LGSideMenuGesturesHandler.h"
 
 @implementation LGSideMenuGesturesHandler
