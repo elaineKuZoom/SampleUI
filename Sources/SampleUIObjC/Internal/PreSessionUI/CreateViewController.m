@@ -91,8 +91,6 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [ZoomVideoSDK shareInstance].delegate = self;
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    delegate.canRotation = YES;
 
 #if TARGET_OS_VISION
     // Vision Pro: statusBarOrientation not available, use default orientation
@@ -124,8 +122,6 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 }
 
 - (void)onDeviceOrientationChangeNotification:(NSNotification *)aNotification {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    delegate.canRotation = NO;
     self.canRotation = NO;
 }
 
@@ -470,77 +466,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 
 - (void)onMoreTestClicked:(id)sender
 {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"VB"
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Audio Test"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-        [self audioTest];
-                                                      }]];
-
-
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-
-    UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-    if (popover)
-    {
-        popover.sourceView = self.sessionNameTF;
-        popover.sourceRect = self.sessionNameTF.frame;
-        popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-    }
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-
-}
-
-- (void)audioTest {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Test Audio"
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Test Mic Recording"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-                                                            ZoomVideoSDKTestAudioDeviceHelper *heler = [[ZoomVideoSDK shareInstance] getTestAudioDeviceHelper];
-                                                            ZoomVideoSDKError startMicTestRecordingRet = [heler startMicTest];
-                                                            NSLog(@"startMicTestRecordingRet====>%@",@(startMicTestRecordingRet));
-
-                                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                                ZoomVideoSDKError stopMicTestRecordingRet = [heler stopMicTest];
-                                                                NSLog(@"stopMicTestRecordingRet====>%@",@(stopMicTestRecordingRet));
-
-
-                                                                ZoomVideoSDKError playMicTestRecordingRet = [heler playMicTest];
-                                                                NSLog(@"playMicTestRecordingRet====>%@",@(playMicTestRecordingRet));
-
-                                                            });
-                                                      }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Test Speaker"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-                                                            ZoomVideoSDKTestAudioDeviceHelper *heler = [[ZoomVideoSDK shareInstance] getTestAudioDeviceHelper];
-                                                            ZoomVideoSDKError startSpeakerTestRet = [heler startSpeakerTest];
-                                                            NSLog(@"startSpeakerTestRet====>%@",@(startSpeakerTestRet));
-
-                                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                                                ZoomVideoSDKError stopSpeakerTestRet = [heler stopSpeakerTest];
-                                                                NSLog(@"stopSpeakerTestRet====>%@",@(stopSpeakerTestRet));
-                                                            });
-                                                      }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-
-    UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-    if (popover)
-    {
-        popover.sourceView = self.sessionNameTF;
-        popover.sourceRect = self.sessionNameTF.frame;
-        popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-    }
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)onCreateClicked:(UIButton *)sender {
