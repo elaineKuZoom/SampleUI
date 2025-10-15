@@ -7,9 +7,9 @@
 //
 
 #import "IntroViewController.h"
-#import "UIViewController+LGSideMenuController.h"
-#import "CreateViewController.h"
-#import "MainViewController.h"
+#import "Vender/LGSideMenuController/UIViewController+LGSideMenuController.h"
+#import "PreSessionUI/CreateViewController.h"
+#import "PreSessionUI/MainViewController.h"
 
 #define kTagImgView         11001
 #if TARGET_OS_VISION
@@ -58,11 +58,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     self.view.backgroundColor = [UIColor whiteColor];
-   
+
     [self.view addSubview:self.bgImageView];
-    
+
     [self.view addSubview:self.scrollView];
     [self.scrollView addSubview:self.firstView];
     [self.scrollView addSubview:self.secondView];
@@ -71,19 +71,19 @@
     [self.scrollView addSubview:self.fifthView];
     [self.scrollView addSubview:self.sixthView];
 //    [self.scrollView addSubview:self.seventhView];
-    
-    
+
+
     [self.view addSubview:self.coverImageView];
-    
+
     [self.view addSubview:self.pageControl];
-    
+
     if (@available(iOS 11.0, *))
     {
         self.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
-    
+
     [self.view addSubview:self.sideButton];
-    
+
     [self.view addSubview:self.buttonView];
     [self.view addSubview:self.createButton];
     [self.view addSubview:self.joinButtin];
@@ -111,10 +111,10 @@
 - (void)windowSizeDidChange:(NSValue *)sizeValue {
     CGSize newSize = [sizeValue CGSizeValue];
     NSLog(@"IntroViewController window size changed to: %@", NSStringFromCGSize(newSize));
-    
+
             // Recalculate layout parameters
     [self recalculateLayoutForSize:newSize];
-    
+
             // Notify child view controllers
     for (UIViewController *childViewController in self.childViewControllers) {
         if ([childViewController respondsToSelector:@selector(windowSizeDidChange:)]) {
@@ -126,7 +126,7 @@
 - (void)recalculateLayoutForSize:(CGSize)size {
     // Vision Pro optimization: recalculate layout parameters based on new window size
     CGFloat screenRatio = size.width / size.height;
-    
+
     // Dynamically adjust background height
     if (screenRatio > 1.5) {
         // Wide screen mode
@@ -138,11 +138,11 @@
         // Standard mode
         _bg_height = size.height * 0.6;
     }
-    
+
     // Dynamically adjust button width and position
     CGFloat buttonWidth = MIN(size.width * 0.35, 400); // Max width 400
     CGFloat buttonMargin = (size.width - buttonWidth) / 2;
-    
+
     // Update layout
     [self updateLayoutForNewSize:size buttonWidth:buttonWidth buttonMargin:buttonMargin];
 }
@@ -155,35 +155,35 @@
         CGFloat buttonSpacing = 20; // Button spacing
         CGFloat totalButtonHeight = Button_Hight * 2 + buttonSpacing;
         CGFloat button_y = _bg_height + (availableHeight - totalButtonHeight) / 2;
-        
+
         self.createButton.frame = CGRectMake(buttonMargin, button_y, buttonWidth, Button_Hight);
         self.joinButtin.frame = CGRectMake(buttonMargin, MaxY(self.createButton) + buttonSpacing, buttonWidth, Button_Hight);
     }
-    
+
     // Update background image layout
     if (self.bgImageView) {
         self.bgImageView.frame = CGRectMake(0, 0, size.width, _bg_height);
     }
-    
+
     // Update scroll view layout
     if (self.scrollView) {
         self.scrollView.frame = CGRectMake(0, 0, size.width, Height(self.bgImageView));
         self.scrollView.contentSize = CGSizeMake(size.width * self.pageControl.numberOfPages, Width(self.scrollView));
     }
-    
+
     // Update page control position
     if (self.pageControl) {
         CGFloat pageControlY = size.height * 0.06; // 6% of screen height
         self.pageControl.frame = CGRectMake(0, pageControlY, size.width, kPageHeight);
     }
-    
+
     // Update side button position
     if (self.sideButton) {
         CGFloat sideButtonX = size.width * 0.04; // 4% of screen width
         CGFloat sideButtonY = size.height * 0.06; // Align with page control
         self.sideButton.frame = CGRectMake(sideButtonX, sideButtonY, 30, 30);
     }
-    
+
     // Re-layout all subviews
     [self viewDidLayoutSubviews];
 }
@@ -205,7 +205,7 @@
     // Vision Pro optimization: dynamically calculate layout parameters
     CGSize screenSize = self.view.bounds.size;
     CGFloat screenRatio = screenSize.width / screenSize.height;
-    
+
     // Dynamically adjust background height
     if (screenRatio > 1.5) {
         // Wide screen mode
@@ -217,30 +217,30 @@
         // Standard mode
         _bg_height = screenSize.height * 0.6;
     }
-    
+
     // Dynamically adjust page control position
     CGFloat pageControlY = screenSize.height * 0.06; // 6% of screen height
     self.pageControl.frame = CGRectMake(0, pageControlY, screenSize.width, kPageHeight);
-    
+
     // Dynamically adjust side button position
     CGFloat sideButtonX = screenSize.width * 0.04; // 4% of screen width
     CGFloat sideButtonY = pageControlY;
     self.sideButton.frame = CGRectMake(sideButtonX, sideButtonY, 30, 30);
-    
+
     // Dynamically adjust button width
     CGFloat buttonWidth = MIN(screenSize.width * 0.35, 400); // Max width 400
     CGFloat buttonMargin = (screenSize.width - buttonWidth) / 2;
-    
+
     // Apply layout
     [self applyVisionProLayout:screenSize buttonWidth:buttonWidth buttonMargin:buttonMargin];
 }
 
 - (void)applyVisionProLayout:(CGSize)screenSize buttonWidth:(CGFloat)buttonWidth buttonMargin:(CGFloat)buttonMargin {
     self.bgImageView.frame = CGRectMake(0, 0, screenSize.width, _bg_height);
-    
+
     self.scrollView.frame = CGRectMake(0, 0, screenSize.width, Height(self.bgImageView));
     self.scrollView.contentSize = CGSizeMake(screenSize.width * self.pageControl.numberOfPages, Width(self.scrollView));
-    
+
     [self updateFirstViewFrame];
     [self updateSecondViewFrame];
     [self updateThirdViewFrame];
@@ -250,15 +250,15 @@
 
     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView) - screenSize.width * coverImage.size.height/coverImage.size.width, screenSize.width, screenSize.width * coverImage.size.height/coverImage.size.width);
-    
+
     self.buttonView.frame = CGRectMake(0, _bg_height, screenSize.width, screenSize.height - _bg_height);
-    
+
     // Vision Pro optimization: ensure buttons have sufficient vertical space
     CGFloat availableHeight = screenSize.height - _bg_height;
             CGFloat buttonSpacing = 20; // Button spacing
     CGFloat totalButtonHeight = Button_Hight * 2 + buttonSpacing;
     CGFloat button_y = _bg_height + (availableHeight - totalButtonHeight) / 2;
-    
+
     self.createButton.frame = CGRectMake(buttonMargin, button_y, buttonWidth, Button_Hight);
     self.joinButtin.frame = CGRectMake(buttonMargin, MaxY(self.createButton) + buttonSpacing, buttonWidth, Button_Hight);
 }
@@ -266,14 +266,14 @@
 
 - (void)layoutForIOS {
     self.pageControl.frame = CGRectMake(0, Top_Space_Hight, self.view.bounds.size.width, kPageHeight);
-    
+
     _bg_height = 465 * self.view.bounds.size.height/590; // size from design
-    
+
     self.bgImageView.frame = CGRectMake(0, 0, self.view.bounds.size.width, _bg_height);
-    
+
     self.scrollView.frame = CGRectMake(0, 0, self.view.bounds.size.width, Height(self.bgImageView));
     self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width*self.pageControl.numberOfPages, Width(self.scrollView));
-    
+
     [self updateFirstViewFrame];
     [self updateSecondViewFrame];
     [self updateThirdViewFrame];
@@ -283,9 +283,9 @@
 
     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView)-self.view.bounds.size.width * coverImage.size.height/coverImage.size.width, self.view.bounds.size.width, self.view.bounds.size.width * coverImage.size.height/coverImage.size.width);
-    
+
     self.sideButton.frame = CGRectMake(15, Top_Space_Hight, 30, 30);
-    
+
     self.buttonView.frame = CGRectMake(0, _bg_height, self.view.bounds.size.width, self.view.bounds.size.height-_bg_height);
     float button_y = Height(self.firstView) + (self.view.bounds.size.height - _bg_height - Button_Hight*2 -15)/2;
     self.createButton.frame = CGRectMake(40, button_y, self.view.bounds.size.width-80, Button_Hight);
@@ -306,7 +306,7 @@
         self.firstView.frame = CGRectMake(0, 0, self.view.bounds.size.width, _bg_height);
     }
 #endif
-    
+
     imgView.frame = CGRectMake(0, [self imageViewYOffset], self.view.bounds.size.width, _bg_height);
 }
 
@@ -314,7 +314,7 @@
 {
     CGRect viewFrame = CGRectOffset(self.firstView.frame, self.firstView.frame.size.width, 0);
     self.secondView.frame = viewFrame;
-    
+
     UIImageView *imgView = [self.secondView viewWithTag:kTagImgView];
     imgView.frame = CGRectMake(0, [self imageViewYOffset], self.view.bounds.size.width, _bg_height);
 }
@@ -323,7 +323,7 @@
 {
     CGRect viewFrame = CGRectOffset(self.secondView.frame, self.secondView.frame.size.width, 0);
     self.thirdView.frame = viewFrame;
-    
+
     UIImageView *imgView = [self.thirdView viewWithTag:kTagImgView];
     imgView.frame = CGRectMake(0, [self imageViewYOffset], self.view.bounds.size.width, _bg_height);
 }
@@ -332,7 +332,7 @@
 {
     CGRect viewFrame = CGRectOffset(self.thirdView.frame, self.thirdView.frame.size.width, 0);
     self.forthView.frame = viewFrame;
-    
+
     UIImageView *imgView = [self.forthView viewWithTag:kTagImgView];
     imgView.frame = CGRectMake(0, [self imageViewYOffset], self.view.bounds.size.width, _bg_height);
 }
@@ -392,7 +392,7 @@
         _createButton.layer.cornerRadius = 10;
         _createButton.clipsToBounds = YES;
     }
-    
+
     return _createButton;
 }
 
@@ -404,7 +404,7 @@
         _bgImageView.image = [UIImage imageNamed:@"intro_bg"];
         _bgImageView.contentMode = UIViewContentModeScaleAspectFill;
     }
-    
+
     return _bgImageView;
 }
 
@@ -415,7 +415,7 @@
         _coverImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _coverImageView.image = [UIImage imageNamed:@"cover_bg"];
     }
-    
+
     return _coverImageView;
 }
 
@@ -447,7 +447,7 @@
         [_sideButton setBackgroundImage:[UIImage imageNamed:@"side_btn_bg"] forState:UIControlStateNormal];
         [_sideButton addTarget:self action:@selector(onSideClicked:) forControlEvents:UIControlEventTouchUpInside];
     }
-    
+
     return _sideButton;
 }
 
@@ -459,12 +459,12 @@
         _scrollView.delegate = self;
         _scrollView.pagingEnabled = YES;
         _scrollView.showsVerticalScrollIndicator = NO;
-        
+
         //This is the starting point of the ScrollView
         CGPoint scrollPoint = CGPointMake(0, 0);
         [_scrollView setContentOffset:scrollPoint animated:YES];
     }
-    
+
     return _scrollView;
 }
 
@@ -478,7 +478,7 @@
         _pageControl.pageIndicatorTintColor = [UIColor colorWithWhite:1 alpha:0.5];
         _pageControl.numberOfPages = 6;
     }
-    
+
     return _pageControl;
 }
 
@@ -487,7 +487,7 @@
     if (!_firstView)
     {
         _firstView = [[UIView alloc] initWithFrame:CGRectZero];
-        
+
         UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageview.tag = kTagImgView;
         imageview.clipsToBounds = YES;
@@ -495,7 +495,7 @@
         imageview.image = [UIImage imageNamed:@"intro_bg_1"];
         [_firstView addSubview:imageview];
     }
-    
+
     return _firstView;
 }
 
@@ -504,7 +504,7 @@
     if (!_secondView)
     {
         _secondView = [[UIView alloc] initWithFrame:CGRectZero];
-        
+
         UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageview.tag = kTagImgView;
         imageview.clipsToBounds = YES;
@@ -512,7 +512,7 @@
         imageview.image = [UIImage imageNamed:@"intro_bg_2"];
         [_secondView addSubview:imageview];
      }
-    
+
     return _secondView;
 }
 
@@ -521,7 +521,7 @@
     if (!_thirdView)
     {
         _thirdView = [[UIView alloc] initWithFrame:CGRectZero];
-        
+
         UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageview.tag = kTagImgView;
         imageview.clipsToBounds = YES;
@@ -529,7 +529,7 @@
         imageview.image = [UIImage imageNamed:@"intro_bg_3"];
         [_thirdView addSubview:imageview];
     }
-    
+
     return _thirdView;
 }
 
@@ -538,7 +538,7 @@
     if (!_forthView)
     {
         _forthView = [[UIView alloc] initWithFrame:CGRectZero];
-        
+
         UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectZero];
         imageview.tag = kTagImgView;
         imageview.clipsToBounds = YES;
@@ -546,7 +546,7 @@
         imageview.image = [UIImage imageNamed:@"intro_bg_4"];
         [_forthView addSubview:imageview];
     }
-    
+
     return _forthView;
 }
 
@@ -590,7 +590,7 @@
 //    if (!_seventhView)
 //    {
 //        _seventhView = [[UIView alloc] initWithFrame:CGRectZero];
-//        
+//
 //        UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectZero];
 //        imageview.tag = kTagImgView;
 //        imageview.clipsToBounds = YES;
@@ -598,7 +598,7 @@
 //        imageview.image = [UIImage imageNamed:@"intro_bg_7"];
 //        [_seventhView addSubview:imageview];
 //    }
-//    
+//
 //    return _seventhView;
 //}
 
@@ -615,7 +615,7 @@
 - (void)onJoinClicked:(UIButton *)sender {
     CreateViewController *vc = [[CreateViewController alloc] init];
     vc.type = ZoomVideoCreateJoinType_Join;
-    
+
     MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
     UINavigationController *navigationController = (UINavigationController *)mainViewController.rootViewController;
     [navigationController pushViewController:vc animated:YES];
