@@ -1,6 +1,6 @@
 #import "SampleUIBootstrap.h"
 #import "BaseNavigationController.h"
-#import "IntroViewController.h"
+#import "PreSessionUI/IntroViewController.h"
 #import "UISceneOrientationHelper.h"
 @import ZoomVideoSDK; // or import via a public header that wraps it
 

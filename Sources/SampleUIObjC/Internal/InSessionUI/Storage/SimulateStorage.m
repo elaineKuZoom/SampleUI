@@ -7,7 +7,7 @@
 //
 
 #import "SimulateStorage.h"
-#import "MoreMenuViewController.h"
+#import "InSessionUI/More/MoreMenuViewController.h"
 
 #define kEnableLowerThird   @"kEnableLowerThird"
 #define kLowerThirdName     @"kLowerThirdName"
@@ -37,12 +37,12 @@
 + (SimulateStorage*)shareInstance;
 {
     static SimulateStorage *instance = nil;
-    
+
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [SimulateStorage new];
     });
-    
+
     return instance;
 }
 
@@ -61,7 +61,7 @@
     ZoomVideoSDKSession *session = [[ZoomVideoSDK shareInstance] getSession];
     ZoomVideoSDKUser *my = [session getMySelf];
     if (!my) return;
-    
+
     LowerThirdCmd *cmd = [self getUsersLowerThird:my];
     if (!cmd)
     {
@@ -90,12 +90,12 @@
     if (!name || name.length == 0 || !description) {
         return;
     }
-    
+
     [ZOOM_UD setObject:name forKey:kLowerThirdName];
     [ZOOM_UD setObject:description forKey:kLowerThirddesc];
     [ZOOM_UD setInteger:index forKey:kLowerThirdColorIndex];
     [ZOOM_UD synchronize];
-    
+
 }
 
 + (NSString *)myLowerThirdName;
@@ -156,7 +156,7 @@
         }
         return NO;
     }
-    
+
     if (str) {
         NSArray *colorArr = COLORARR;
         if ([str isEqual:colorArr[3]] ||
@@ -166,10 +166,10 @@
         }
         return NO;
     }
-    
+
     if (idx == 3  || idx == 4 || idx == 7)
         return YES;
-    
+
     return NO;
 }
 
@@ -178,26 +178,26 @@
     if (!lowerString || !user) {
         return;
     }
-    
+
     NSArray *parseArray = [lowerString componentsSeparatedByString:@"|"];
     if (!parseArray || parseArray.count != 4) return;
-    
+
     NSString *typeStr = parseArray[0];
     NSString *name = parseArray[1];
     NSString *desc = parseArray[2];
     NSString *colorStr = parseArray[3];
-    
+
     if (!typeStr || [typeStr integerValue] != CmdTpye_Lowerthird ||
         !name || name.length == 0 ||
         !colorStr || colorStr.length == 0)
         return;
-    
+
     LowerThirdCmd *ltCmd = [LowerThirdCmd new];
     ltCmd.user = user;
     ltCmd.name = name;
     ltCmd.desc = desc;
     ltCmd.colorStr = colorStr;
-    
+
     __block NSInteger objIndex = -1;
     [self.lowerThirdArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         LowerThirdCmd *ltCmd = (LowerThirdCmd *)obj;
@@ -206,19 +206,19 @@
             *stop = YES;
         }
     }];
-    
+
     if (objIndex != -1) [self.lowerThirdArr removeObjectAtIndex:objIndex];
-    
+
     [self.lowerThirdArr addObject:ltCmd];
 }
 
 - (void)addMyLowerThird:(NSString *)name desc:(NSString *)desc colorIndex:(NSInteger)idx;
 {
     if (!name) return;
-    
+
     ZoomVideoSDKSession *session = [[ZoomVideoSDK shareInstance] getSession];
     ZoomVideoSDKUser *my = [session getMySelf];
-    
+
     __block NSInteger objIndex = -1;
     [self.lowerThirdArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         LowerThirdCmd *ltCmd = (LowerThirdCmd *)obj;
@@ -234,9 +234,9 @@
     cmd.name = name;
     cmd.desc = desc ? desc : @"";
     cmd.colorStr = [SimulateStorage lowerThirdColorString:idx];
-    
+
     [self.lowerThirdArr addObject:cmd];
-    
+
     [SimulateStorage setLowerThirdName:cmd.name desc:cmd.desc colorIndex:idx];
 }
 
@@ -244,7 +244,7 @@
 {
     if (!user)
         return nil;
-    
+
     __block NSInteger objIndex = -1;
     [self.lowerThirdArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         LowerThirdCmd *ltCmd = (LowerThirdCmd *)obj;
@@ -253,10 +253,10 @@
             *stop = YES;
         }
     }];
-    
+
     if (objIndex != -1)
         return [self.lowerThirdArr objectAtIndex:objIndex];
-    
+
     return nil;
 }
 
@@ -266,15 +266,15 @@
     ZoomVideoSDKUser *my = [session getMySelf];
     if (!my)
         return NO;
-    
+
     LowerThirdCmd *cmd = [self getUsersLowerThird:my];
     if (!cmd)
         return NO;
-    
+
     NSString *descString = cmd.desc;
     if (!descString || descString.length == 0)
         descString = @"";
-    
+
     NSString *cmdStr = [NSString stringWithFormat:@"%@|%@|%@|%@", @(CmdTpye_Lowerthird), cmd.name, descString, cmd.colorStr];
     ZoomVideoSDKError ret = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdStr receiveUser:nil];
     return ret == Errors_Success;
@@ -333,7 +333,7 @@
         default:
             break;
     }
-    
+
     return cmd_type;
 }
 
@@ -341,7 +341,7 @@
 - (BOOL)sendReactionCmd:(kTagReactionTpye)type {
     NSString * cmdString = [self generateReactionCmdString:type];
     if (!cmdString) return NO;
-    
+
     ZoomVideoSDKError error = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdString receiveUser:nil];
     NSLog(@"Reaction::sendCommand===>%@",error == Errors_Success ? @"YES" : @"NO");
     return error == Errors_Success ? YES : NO;
@@ -386,11 +386,11 @@
     if (!parseArray || parseArray.count < 2) {
         return kTagReactionTpye_None;
     }
-    
+
     kTagReactionTpye type = kTagReactionTpye_None;
     NSString * reactionString = parseArray[1];
     if (!reactionString) return kTagReactionTpye_None;
-    
+
     if ([@"clap" isEqualToString:reactionString]) {
         type = kTagReactionTpye_Clap;
     } else if ([@"thumbsup" isEqualToString:reactionString]) {
@@ -408,7 +408,7 @@
     } else if ([@"lowerhand" isEqualToString:reactionString]) {
         type = kTagReactionTpye_Lowerhand;
     }
-    
+
     return type;
 }
 
@@ -440,7 +440,7 @@
         default:
             break;
     }
-    
+
     return image;
 }
 
@@ -496,7 +496,7 @@
     kTagFeedbackTpye type = kTagFeedbackTpye_None;
     NSString * feedbackString = parseArray[1];
     if (!feedbackString) return kTagFeedbackTpye_None;
-    
+
     if ([@"verySatisfied" isEqualToString:feedbackString]) {
         type = kTagFeedbackTpye_VerySatisfied;
     } else if ([@"satisfied" isEqualToString:feedbackString]) {
@@ -508,14 +508,14 @@
     } else if ([@"veryUnsatisfied" isEqualToString:feedbackString]) {
         type = kTagFeedbackTpye_VeryUnsatisfied;
     }
-    
+
     return type;
 }
 
 - (BOOL)sendFeedbackPushCmd {
     NSString * cmdString = [self generateFeedbackPushCmdString];
     if (!cmdString) return NO;
-    
+
     ZoomVideoSDKError error = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdString receiveUser:nil];
     NSLog(@"Feedback::sendCommand===>%@",error == Errors_Success ? @"YES" : @"NO");
     return error == Errors_Success ? YES : NO;
@@ -524,7 +524,7 @@
 - (BOOL)sendFeedbackSubmitCmd:(kTagFeedbackTpye)type {
     NSString * cmdString = [self generateFeedbackSubmitCmdString:type];
     if (!cmdString) return NO;
-    
+
     ZoomVideoSDKError error = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdString receiveUser:nil];
     NSLog(@"Feedback::sendCommand===>%@",error == Errors_Success ? @"YES" : @"NO");
     return error == Errors_Success ? YES : NO;
@@ -534,7 +534,7 @@
 {
     [self.lowerThirdArr removeAllObjects];
     self.lowerThirdArr = nil;
-    
+
     if (![SimulateStorage shareInstance].feedbackSource) {
         return;
     }
@@ -547,9 +547,9 @@
     if ([SimulateStorage shareInstance].feedbackSource) {
         return;
     }
-    
+
     [SimulateStorage shareInstance].feedbackSource = [[NSMutableArray alloc] init];
-    
+
     FeedbackSurvey * itemVerySatisfied = [[FeedbackSurvey alloc] init];
     itemVerySatisfied.title = @"Very Satisfied";
     itemVerySatisfied.icon = @"feedback_very_satisfied";
@@ -557,7 +557,7 @@
     itemVerySatisfied.type = kTagFeedbackTpye_VerySatisfied;
     itemVerySatisfied.responseUserArray = [[NSMutableArray alloc] init];
     [[SimulateStorage shareInstance].feedbackSource addObject:itemVerySatisfied];
-    
+
     FeedbackSurvey * itemSatisfied = [[FeedbackSurvey alloc] init];
     itemSatisfied.title = @"Satisfied";
     itemSatisfied.icon = @"feedback_satisfied";
@@ -565,7 +565,7 @@
     itemSatisfied.type = kTagFeedbackTpye_Satisfied;
     itemSatisfied.responseUserArray = [[NSMutableArray alloc] init];
     [[SimulateStorage shareInstance].feedbackSource addObject:itemSatisfied];
-    
+
     FeedbackSurvey * itemNeutral = [[FeedbackSurvey alloc] init];
     itemNeutral.title = @"Neutral";
     itemNeutral.icon = @"feedback_neutral";
@@ -573,7 +573,7 @@
     itemNeutral.type = kTagFeedbackTpye_Neutral;
     itemNeutral.responseUserArray = [[NSMutableArray alloc] init];
     [[SimulateStorage shareInstance].feedbackSource addObject:itemNeutral];
-    
+
     FeedbackSurvey * itemUnsatisfied = [[FeedbackSurvey alloc] init];
     itemUnsatisfied.title = @"Unsatisfied";
     itemUnsatisfied.icon = @"feedback_unsatisfied";
@@ -581,7 +581,7 @@
     itemUnsatisfied.type = kTagFeedbackTpye_Unsatisfied;
     itemUnsatisfied.responseUserArray = [[NSMutableArray alloc] init];
     [[SimulateStorage shareInstance].feedbackSource addObject:itemUnsatisfied];
-    
+
     FeedbackSurvey * itemVeryUnsatisfied = [[FeedbackSurvey alloc] init];
     itemVeryUnsatisfied.title = @"Very Unsatisfied";
     itemVeryUnsatisfied.icon = @"feedback_very_unsatisfied";
@@ -595,9 +595,9 @@
     if (!self.feedbackSource) {
         return;
     }
-    
+
     kTagFeedbackTpye feedbackType = [self getFeedbackTypeFromCmd:cmdString];
-    
+
     for (FeedbackSurvey *item in self.feedbackSource) {
         if (item.responseUserArray && [item.responseUserArray containsObject:userId]) {
             item.responseCount --;
@@ -605,14 +605,14 @@
             break;
         }
     }
-        
+
     for (FeedbackSurvey *item in self.feedbackSource) {
         if (item.responseUserArray && item.type == feedbackType) {
             item.responseCount ++;
             [item.responseUserArray addObject:userId];
         }
     }
-        
+
     [[NSNotificationCenter defaultCenter] postNotificationName:Notification_ReceiveFeedbackAction object:nil];
 }
 @end
