@@ -140,7 +140,16 @@
         {
 			MoreMenuViewController *pollingVC = [[MoreMenuViewController alloc] init];
 			pollingVC.modalPresentationStyle = UIModalPresentationPageSheet;
-			[self presentViewController:pollingVC animated:YES completion:nil];
+
+			// Find the parent view controller from responder chain
+			UIResponder *responder = self;
+			while (responder) {
+				if ([responder isKindOfClass:[UIViewController class]]) {
+					[(UIViewController *)responder presentViewController:pollingVC animated:YES completion:nil];
+					break;
+				}
+				responder = [responder nextResponder];
+			}
 			return;
         }
 
