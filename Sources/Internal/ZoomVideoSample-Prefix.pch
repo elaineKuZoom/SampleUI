@@ -1,0 +1,103 @@
+//
+//  ZoomVideoSample-Prefix.pch
+//  ZoomVideoSample
+//
+//  Created by Zoom Communications on 2019/5/27.
+//  Copyright © 2019 Zoom. All rights reserved.
+//
+
+#ifndef ZoomVideoSample_Prefix_pch
+#define ZoomVideoSample_Prefix_pch
+
+
+#ifdef __OBJC__
+
+#import <ZoomVideoSDK/ZoomVideoSDK.h>
+#import "MBProgressHUD.h"
+#import "NSObject+ErrorMessage.h"
+
+#import "AppDelegate.h"
+#import "UISceneOrientationHelper.h"
+
+typedef enum : NSUInteger {
+    DisplayMode_LetterBox,
+    DisplayMode_PanAndScan,
+} DisplayMode;
+
+#endif
+
+#define kScreenShareBundleId @""
+
+//for iOS version check
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#if TARGET_OS_VISION
+#define IsIphoneX NO
+#else
+#define IsIphoneX  ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125,2436), [[UIScreen mainScreen] currentMode].size) : NO)
+#endif
+
+//for device check
+#if TARGET_OS_VISION
+#define IS_IPAD YES
+#define IS_IPHONE NO
+#define IPHONE_X NO
+#else
+
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IPHONE_X \
+({BOOL isPhoneX = NO;\
+if (@available(iOS 11.0, *)) {\
+UIWindow *keyWindow = [UISceneOrientationHelper currentKeyWindow];\
+if (keyWindow) {\
+isPhoneX = keyWindow.safeAreaInsets.bottom > 0.0;\
+}\
+}\
+(isPhoneX);})
+
+#endif
+
+#define SAFE_ZOOM_INSETS  34
+
+#if TARGET_OS_VISION
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
+#else
+#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+#endif
+
+#define Width(v)                CGRectGetWidth((v).frame)
+#define Height(v)               CGRectGetHeight((v).frame)
+
+#define MinX(v)            CGRectGetMinX((v).frame)
+#define MinY(v)            CGRectGetMinY((v).frame)
+
+#define MidX(v)            CGRectGetMidX((v).frame)
+#define MidY(v)            CGRectGetMidY((v).frame)
+
+#define MaxX(v)            CGRectGetMaxX((v).frame)
+#define MaxY(v)            CGRectGetMaxY((v).frame)
+
+#define RGBCOLOR(r, g, b)   [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1.0]
+#define RGBCOLOR_With_Alpha(r, g, b, a)   [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
+
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+#if TARGET_OS_VISION
+#define VISION_PRO_SCALE 2.0
+#define VISION_PRO_BOUNDS CGRectMake(0, 0, 1536, 960)
+#define GET_SCREEN_BOUNDS() VISION_PRO_BOUNDS
+#define GET_SCREEN_SCALE() VISION_PRO_SCALE
+#define GET_STATUS_BAR_ORIENTATION() UIInterfaceOrientationPortrait
+
+#else
+#define GET_SCREEN_BOUNDS() [UIScreen mainScreen].bounds
+#define GET_SCREEN_SCALE() [UIScreen mainScreen].scale
+#define GET_STATUS_BAR_ORIENTATION() [UISceneOrientationHelper currentInterfaceOrientation]
+#endif
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif /* ZoomVideoSample_Prefix_pch */
