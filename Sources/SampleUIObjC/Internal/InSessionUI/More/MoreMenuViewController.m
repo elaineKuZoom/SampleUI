@@ -266,33 +266,28 @@
     }
 #endif
     else if (item.type == kTagMoreMenuTpye_Feedback) {
-        [self dismissViewControllerAnimated:NO completion:nil];
         if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost]) {
             [[SimulateStorage shareInstance] initFeedbackItem];
 
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                FeedbackSurveyResultViewController * vc = [[FeedbackSurveyResultViewController alloc] init];
-                vc.modalPresentationStyle = UIModalPresentationFullScreen;
-                [[appDelegate topViewController] presentViewController:vc animated:YES completion:nil];
-            });
+            FeedbackSurveyResultViewController * vc = [[FeedbackSurveyResultViewController alloc] init];
+            vc.modalPresentationStyle = UIModalPresentationFullScreen;
+            [self dismissViewControllerAnimated:NO completion:^{
+                [self.presentingViewController presentViewController:vc animated:YES completion:nil];
+            }];
         } else {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
-                vc.type = FeedbackPopViewTpye_Receive;
-                vc.modalPresentationStyle = UIModalPresentationPageSheet;
-                [[appDelegate topViewController] presentViewController:vc animated:YES completion:nil];
-            });
+            FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
+            vc.type = FeedbackPopViewTpye_Receive;
+            vc.modalPresentationStyle = UIModalPresentationPageSheet;
+            [self dismissViewControllerAnimated:NO completion:^{
+                [self.presentingViewController presentViewController:vc animated:YES completion:nil];
+            }];
         }
     } else if (item.type == kTagMoreMenuTpye_LowerThird) {
-        [self dismissViewControllerAnimated:NO completion:nil];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            LowerThirdSettingViewController *vc = [[LowerThirdSettingViewController alloc] init];
-            vc.isPushed = NO;
-            AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            [[appDelegate topViewController] presentViewController:vc animated:YES completion:nil];
-        });
+        LowerThirdSettingViewController *vc = [[LowerThirdSettingViewController alloc] init];
+        vc.isPushed = NO;
+        [self dismissViewControllerAnimated:NO completion:^{
+            [self.presentingViewController presentViewController:vc animated:YES completion:nil];
+        }];
     }
 }
 
