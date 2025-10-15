@@ -8,6 +8,7 @@
 
 // Common macros
 #define RGBCOLOR(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+#define RGBCOLOR_With_Alpha(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
 
 // Screen dimensions
 #define SCREEN_WIDTH [[UIScreen mainScreen] bounds].size.width
