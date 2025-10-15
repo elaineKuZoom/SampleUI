@@ -7,10 +7,10 @@
 //
 
 #import "CreateViewController.h"
-#import "CanvasViewController.h"
+#import "Canvas/CanvasViewController.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "KGModal.h"
-#import "RendererSelectView.h"
+#import "Vender/KGModal/KGModal.h"
+#import "PreSessionUI/RendererSelectView.h"
 
 typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     ZoomVideoRendererType_Zoom_Canvas      = 0,
@@ -58,21 +58,21 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
     [self.navigationController.navigationBar setTintColor:RGBCOLOR(0x2D, 0x8C, 0xFF)];
     self.navigationController.navigationBar.translucent = NO;
-    
+
     UIBarButtonItem *moreTestItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"More", @"") style:UIBarButtonItemStylePlain target:self action:@selector(onMoreTestClicked:)];
     [self.navigationItem setRightBarButtonItem:moreTestItem];
-    
+
     self.sessionNameArray = @[@"Chinatown",@"Koreatown",@"Olvera Street",@"Little Tokyo",@"Little Armenia",@"Thai Town",@"Little Ethiopia",@"Historic Filipinotown",@"Pico-Robertson",@"Leimert Park"];
-    
+
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
 
     [self initSubView];
-    
+
     [self.sessionNameTF becomeFirstResponder];
-    
+
     self.rendererType = ZoomVideoRendererType_Zoom_Canvas;
-    
+
     if (self.type == ZoomVideoCreateJoinType_Create) {
         self.title = @"Create a Session";
         self.button_copy.hidden = NO;
@@ -84,7 +84,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         [self.startBtn setTitle:@"Join" forState:UIControlStateNormal];
         self.sessionNameTF.text = @"";
     }
-    
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -92,7 +92,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [ZoomVideoSDK shareInstance].delegate = self;
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     delegate.canRotation = YES;
-    
+
 #if TARGET_OS_VISION
     // Vision Pro: statusBarOrientation not available, use default orientation
     self.canRotation = NO;
@@ -104,7 +104,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         self.canRotation = YES;
     }
 #endif
-    
+
 #if TARGET_OS_VISION
     // Vision Pro: UIDeviceOrientationDidChangeNotification not available, use UIScene notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDeviceOrientationChangeNotification:) name:UISceneDidActivateNotification object:nil];
@@ -115,7 +115,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (BOOL)shouldAutorotate{
@@ -138,12 +138,12 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     const char* input = [str UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];
     CC_MD5(input, (CC_LONG)strlen(input), result);//checked safe
-    
+
     NSMutableString *digest = [NSMutableString stringWithCapacity:CC_MD5_DIGEST_LENGTH * 2];
     for (NSInteger i = 0; i < CC_MD5_DIGEST_LENGTH; i++) {
         [digest appendFormat:@"%02x", result[i]];
     }
-    
+
     return digest;
 }
 
@@ -156,9 +156,9 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 }
 
 - (void)initSubView {
-    
+
     float item_hight = 60;
-    
+
     self.sessionNameLabel = [[UILabel alloc] init];
     self.sessionNameLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.sessionNameLabel.font = [UIFont systemFontOfSize:15.0];
@@ -166,7 +166,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.sessionNameLabel];
     [self.sessionNameLabel sizeToFit];
     self.sessionNameLabel.frame = CGRectMake(15, 0, Width(self.sessionNameLabel), item_hight);
-    
+
     self.sessionNameTF = [[UITextField alloc] initWithFrame:CGRectMake(MaxX(self.sessionNameLabel)+30, MinY(self.sessionNameLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-45, item_hight)];
     self.sessionNameTF.textAlignment = NSTextAlignmentLeft;
     self.sessionNameTF.placeholder = @"Required";
@@ -176,19 +176,19 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.sessionNameTF];
     [self.sessionNameTF addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     self.sessionNameTF.delegate = self;
-    
+
     self.button_copy = [[UIButton alloc] initWithFrame:CGRectMake(MaxX(self.sessionNameTF), MinY(self.sessionNameLabel)+8, 44, 44)];
     [self.button_copy setImage:[UIImage imageNamed:@"copy"] forState:UIControlStateNormal];
     [self.button_copy addTarget:self action:@selector(onCopyClicked:) forControlEvents:UIControlEventTouchUpInside];
     self.button_copy.layer.cornerRadius = 5.0;
     self.button_copy.clipsToBounds = YES;
     [self.view addSubview:self.button_copy];
-    
-    
+
+
     self.line1 = [[UIView alloc] initWithFrame:CGRectMake(15, MaxY(self.sessionNameLabel), SCREEN_WIDTH-30, 1)];
     self.line1.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line1];
-    
+
     self.displayNameLabel = [[UILabel alloc] init];
     self.displayNameLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.displayNameLabel.font = [UIFont systemFontOfSize:15.0];
@@ -196,7 +196,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.displayNameLabel];
     [self.displayNameLabel sizeToFit];
     self.displayNameLabel.frame = CGRectMake(15, MaxY(self.line1), Width(self.displayNameLabel), item_hight);
-    
+
     self.displayNameTF = [[UITextField alloc] initWithFrame:CGRectMake(MinX(self.sessionNameTF), MinY(self.displayNameLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-45, item_hight)];
     self.displayNameTF.textAlignment = NSTextAlignmentLeft;
     self.displayNameTF.placeholder = @"Required";
@@ -204,20 +204,20 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     self.displayNameTF.textColor = RGBCOLOR(0x23, 0x23, 0x33);;
     self.displayNameTF.font = [UIFont boldSystemFontOfSize:15.0];
     [self.view addSubview:self.displayNameTF];
-    
+
     self.displayNameTF.text = [UIDevice currentDevice].name;;
-    
+
     self.line2 = [[UIView alloc] initWithFrame:CGRectMake(15, MaxY(self.displayNameLabel), SCREEN_WIDTH-30, 1)];
     self.line2.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line2];
-    
+
     self.passwordLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, MaxY(self.line2), Width(self.sessionNameLabel), item_hight)];
     self.passwordLabel.numberOfLines = 0;
     self.passwordLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.passwordLabel.font = [UIFont systemFontOfSize:15.0];
     self.passwordLabel.text = @"Password";
     [self.view addSubview:self.passwordLabel];
-    
+
     self.passwordTF = [[UITextField alloc] initWithFrame:CGRectMake(MinX(self.sessionNameTF), MinY(self.passwordLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-45, item_hight)];
     self.passwordTF.textAlignment = NSTextAlignmentLeft;
     self.passwordTF.placeholder = @"Optional";
@@ -227,18 +227,18 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.passwordTF];
     [self.passwordTF addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     self.passwordTF.delegate = self;
-    
+
     self.line3 = [[UIView alloc] initWithFrame:CGRectMake(15, MaxY(self.passwordLabel), SCREEN_WIDTH-30, 1)];
     self.line3.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line3];
-    
+
     self.tokenLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, MaxY(self.line3), Width(self.sessionNameLabel), item_hight)];
     self.tokenLabel.numberOfLines = 0;
     self.tokenLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.tokenLabel.font = [UIFont systemFontOfSize:15.0];
     self.tokenLabel.text = @"Token";
     [self.view addSubview:self.tokenLabel];
-    
+
     self.tokenTF = [[UITextField alloc] initWithFrame:CGRectMake(MinX(self.sessionNameTF), MinY(self.tokenLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-45, item_hight)];
     self.tokenTF.textAlignment = NSTextAlignmentLeft;
     self.tokenTF.placeholder = @"Optional";
@@ -246,18 +246,18 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     self.tokenTF.textColor = RGBCOLOR(0x23, 0x23, 0x33);;
     self.tokenTF.font = [UIFont boldSystemFontOfSize:15.0];
     [self.view addSubview:self.tokenTF];
-    
+
     self.line4 = [[UIView alloc] initWithFrame:CGRectMake(15, MaxY(self.tokenLabel), SCREEN_WIDTH-30, 1)];
     self.line4.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line4];
-    
+
     self.rendererLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, MaxY(self.line4), Width(self.sessionNameLabel), item_hight)];
     self.rendererLabel.numberOfLines = 0;
     self.rendererLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.rendererLabel.font = [UIFont systemFontOfSize:15.0];
     self.rendererLabel.text = @"Renderer";
     [self.view addSubview:self.rendererLabel];
-    
+
     self.rendererResultLabel = [[UILabel alloc] initWithFrame:CGRectMake(MinX(self.sessionNameTF), MinY(self.rendererLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-45, item_hight)];
     self.rendererResultLabel.numberOfLines = 0;
     self.rendererResultLabel.textColor = RGBCOLOR(0x23, 0x23, 0x33);
@@ -267,15 +267,15 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     self.rendererResultLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onRendererClicked:)];
     [self.rendererResultLabel addGestureRecognizer:tapGesture];
-    
+
     self.arrow = [[UIImageView alloc] initWithFrame:CGRectMake(Width(self.rendererResultLabel) -26, (Height(self.rendererResultLabel)-18)/2, 18, 18)];
     self.arrow.image = [UIImage imageNamed:@"arrow_down"];
     [self.rendererResultLabel addSubview:self.arrow];
-    
+
     self.line5 = [[UIView alloc] initWithFrame:CGRectMake(15,  MaxY(self.rendererResultLabel), SCREEN_WIDTH-30, 1)];
     self.line5.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line5];
-    
+
     self.steamingJoinLabel = [[UILabel alloc] init];
     self.steamingJoinLabel.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     self.steamingJoinLabel.font = [UIFont systemFontOfSize:15.0];
@@ -283,7 +283,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.steamingJoinLabel];
     [self.steamingJoinLabel sizeToFit];
     self.steamingJoinLabel.frame = CGRectMake(15, MaxX(self.line5) +30, Width(self.steamingJoinLabel), item_hight);
-    
+
     self.steamingJoinTF = [[UITextField alloc] initWithFrame:CGRectMake(MaxX(self.steamingJoinLabel)+30, MaxX(self.line5) + 30, SCREEN_WIDTH-Width(self.steamingJoinLabel)-45, item_hight)];
     self.steamingJoinTF.textAlignment = NSTextAlignmentLeft;
     self.steamingJoinTF.placeholder = @"Required";
@@ -295,11 +295,11 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     [self.view addSubview:self.steamingJoinTF];
     [self.steamingJoinTF addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     self.steamingJoinTF.delegate = self;
-    
+
     self.line6 = [[UIView alloc] initWithFrame:CGRectMake(15,  MaxY(self.steamingJoinTF), SCREEN_WIDTH-30, 1)];
     self.line6.backgroundColor = RGBCOLOR(0xed, 0xed, 0xff);
     [self.view addSubview:self.line6];
-    
+
     self.startBtn = [[UIButton alloc] initWithFrame:CGRectMake(15, MaxY(self.line6)+20, SCREEN_WIDTH-30, 45)];
     [self.startBtn setBackgroundColor:RGBCOLOR(0x0E, 0x71, 0xEB)];
     [self.startBtn setTitle:@"Create" forState:UIControlStateNormal];
@@ -332,7 +332,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
                 return NO;
             }
         }
-        
+
         return YES;
     }
     return NO;
@@ -344,7 +344,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     if (textField == self.sessionNameTF) {
         textField.text = [textField.text lowercaseString];
     }
-    
+
     if (self.sessionNameTF.text.length == 0) {
         self.button_copy.hidden = YES;
     } else {
@@ -416,7 +416,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
 #endif
-    
+
     float x;
     if (landscape) {
         x = 60;
@@ -424,41 +424,41 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         x = 15;
     }
     float item_hight = 60;
-    
+
     self.sessionNameLabel.frame = CGRectMake(x, 0, Width(self.sessionNameLabel), item_hight);
     self.sessionNameTF.frame = CGRectMake(MaxX(self.sessionNameLabel)+30, MinY(self.sessionNameLabel), SCREEN_WIDTH-Width(self.sessionNameLabel)-x*2-15-70, item_hight);
     self.button_copy.frame = CGRectMake(MaxX(self.sessionNameTF), MinY(self.sessionNameLabel)+8, 44, 44);
     self.line1.frame = CGRectMake(x, MaxY(self.sessionNameLabel), SCREEN_WIDTH-x*2, 1);
-    
+
     self.displayNameLabel.frame = CGRectMake(x, MaxY(self.line1), Width(self.displayNameLabel), item_hight);
     self.displayNameTF.frame = CGRectMake(MinX(self.sessionNameTF), MinY(self.displayNameLabel), Width(self.sessionNameTF), item_hight);
     self.line2.frame = CGRectMake(x, MaxY(self.displayNameLabel), SCREEN_WIDTH-x*2, 1);
-    
+
     self.passwordLabel.frame = CGRectMake(x, MaxY(self.line2), Width(self.sessionNameLabel), item_hight);
     self.passwordTF.frame = CGRectMake(MinX(self.sessionNameTF), MinY(self.passwordLabel), Width(self.sessionNameTF), item_hight);
     self.line3.frame = CGRectMake(x, MaxY(self.passwordLabel), SCREEN_WIDTH-x*2, 1);
-    
+
     self.tokenLabel.frame = CGRectMake(x, MaxY(self.line3), Width(self.sessionNameLabel), item_hight);
     self.tokenTF.frame = CGRectMake(MinX(self.sessionNameTF), MinY(self.tokenLabel), Width(self.sessionNameTF), item_hight);
     self.line4.frame = CGRectMake(x, MaxY(self.tokenLabel), SCREEN_WIDTH-x*2, 1);
-    
+
     self.rendererLabel.frame = CGRectMake(x, MaxY(self.line4), Width(self.sessionNameLabel), item_hight);
     self.rendererResultLabel.frame = CGRectMake(MinX(self.sessionNameTF), MinY(self.rendererLabel), SCREEN_WIDTH-Width(self.tokenLabel)-x*2-15, item_hight);
     self.line5.frame = CGRectMake(x, MaxY(self.rendererLabel), SCREEN_WIDTH-x*2, 1);
-    
+
     self.arrow.frame = CGRectMake(Width(self.rendererResultLabel) -26, (Height(self.rendererResultLabel)-18)/2, 18, 18);
-    
+
     self.steamingJoinLabel.frame = CGRectMake(x, MaxY(self.line5) +30, Width(self.steamingJoinLabel), item_hight);
     self.steamingJoinTF.frame = CGRectMake(MaxX(self.steamingJoinLabel)+30, MaxY(self.line5) + 30, SCREEN_WIDTH-Width(self.steamingJoinLabel)-45, item_hight);
     self.line6.frame = CGRectMake(x,  MaxY(self.steamingJoinTF), SCREEN_WIDTH-30, 1);
-    
+
     self.startBtn.frame = CGRectMake(x, MaxY(self.line6)+20, SCREEN_WIDTH-x*2, 45);
 }
 
 - (void)onCopyClicked:(UIButton *)sender {
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = self.sessionNameTF.text;
-    
+
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.label.text = @"Copied to clipboard";
@@ -480,7 +480,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         [self audioTest];
                                                       }]];
 
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
 
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
@@ -491,7 +491,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
     [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-    
+
 }
 
 - (void)audioTest {
@@ -506,15 +506,15 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
                                                             ZoomVideoSDKTestAudioDeviceHelper *heler = [[ZoomVideoSDK shareInstance] getTestAudioDeviceHelper];
                                                             ZoomVideoSDKError startMicTestRecordingRet = [heler startMicTest];
                                                             NSLog(@"startMicTestRecordingRet====>%@",@(startMicTestRecordingRet));
-                                                        
+
                                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                                                 ZoomVideoSDKError stopMicTestRecordingRet = [heler stopMicTest];
                                                                 NSLog(@"stopMicTestRecordingRet====>%@",@(stopMicTestRecordingRet));
-                                                        
-                                                        
+
+
                                                                 ZoomVideoSDKError playMicTestRecordingRet = [heler playMicTest];
                                                                 NSLog(@"playMicTestRecordingRet====>%@",@(playMicTestRecordingRet));
-                                                        
+
                                                             });
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Test Speaker"
@@ -523,15 +523,15 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
                                                             ZoomVideoSDKTestAudioDeviceHelper *heler = [[ZoomVideoSDK shareInstance] getTestAudioDeviceHelper];
                                                             ZoomVideoSDKError startSpeakerTestRet = [heler startSpeakerTest];
                                                             NSLog(@"startSpeakerTestRet====>%@",@(startSpeakerTestRet));
-                                                            
+
                                                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                                                 ZoomVideoSDKError stopSpeakerTestRet = [heler stopSpeakerTest];
                                                                 NSLog(@"stopSpeakerTestRet====>%@",@(stopSpeakerTestRet));
                                                             });
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -547,7 +547,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         ZoomVideoSDKStreamingJoinContext *streamingJoinContext = [[ZoomVideoSDKStreamingJoinContext alloc]init];
         streamingJoinContext.token = self.tokenTF.text.length > 0 ? self.tokenTF.text : kAppToken;
         streamingJoinContext.channelID = self.steamingJoinTF.text;
-        
+
         ZoomVideoSDKBroadcastStreamingViewerHelper *steamingViewerHelper =  [[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper];
         ZoomVideoSDKError ret = [steamingViewerHelper joinStreaming:streamingJoinContext];
         NSLog(@"----- %s  joinStreaming: %@ ",__FUNCTION__,@(ret));
@@ -559,7 +559,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         }
         return;
     }
-   
+
     if (_sessionNameTF.text.length == 0) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -568,7 +568,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         [hud hideAnimated:YES afterDelay:2.f];
         return;
     }
-    
+
     if (_displayNameTF.text.length == 0) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -577,7 +577,7 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         [hud hideAnimated:YES afterDelay:2.f];
         return;
     }
-    
+
     if (_passwordTF.text.length > 10) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.mode = MBProgressHUDModeText;
@@ -586,14 +586,14 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
         [hud hideAnimated:YES afterDelay:2.f];
         return;
     }
-    
+
     ZoomVideoSDKAudioOptions *audioOption = [ZoomVideoSDKAudioOptions new];
     audioOption.connect     = YES;
     audioOption.mute        = NO;
-    
+
     ZoomVideoSDKVideoOptions *videoOption = [ZoomVideoSDKVideoOptions new];
     videoOption.localVideoOn = YES;
-    
+
 //    self.preProcesser = [[PreProcessHelper alloc] init];
 //    self.virtualSpeaker = [[VirtualSpeaker alloc] init];
 //    self.virtualMic = [[VirtualMicphone alloc] init];
@@ -612,12 +612,12 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 //    sessionContext.externalVideoSourceDelegate  = self.picAdapter;
 //    sessionContext.virtualAudioMicDelegate = self.virtualMic;
 //    sessionContext.virtualAudioSpeakerDelegate = self.virtualSpeaker;
-    
+
     ZoomVideoSDKSession *session = [[ZoomVideoSDK shareInstance] joinSession:sessionContext];
     if (!session) {
         return;
     }
-    
+
     if (self.rendererType == ZoomVideoRendererType_Zoom_Canvas) {
         //Present Session Video View
         CanvasViewController * sessionVC = [[CanvasViewController alloc] init];

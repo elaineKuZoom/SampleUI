@@ -10,7 +10,7 @@
 #import "InSessionUI/TopBar/TopBarView.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import "InSessionUI/More/MoreMenuViewController.h"
-#import "Vendor/KGModal/KGModal.h"
+#import "Vender/KGModal/KGModal.h"
 
 #define COMPARE(FIRST,SECOND) (CFStringCompare(FIRST, SECOND, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 

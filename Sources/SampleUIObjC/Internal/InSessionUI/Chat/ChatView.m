@@ -7,10 +7,10 @@
 //
 
 #import "ChatView.h"
-#import "ChatCell.h"
-#import "TopBarView.h"
-#import "BottomBarView.h"
-#import "ChatInputView.h"
+#import "InSessionUI/Chat/ChatCell.h"
+#import "InSessionUI/TopBar/TopBarView.h"
+#import "InSessionUI/BottomBar/BottomBarView.h"
+#import "InSessionUI/Chat/ChatInputView.h"
 
 @interface ChatView ()<UITableViewDataSource, UITableViewDelegate>
 @property (strong, nonatomic) CAGradientLayer           *gradientLayer;
@@ -41,15 +41,15 @@
     NSDictionary *userInfo = [NSDictionary dictionaryWithDictionary:notification.userInfo];
     CGRect keyBoardBounds  = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGFloat keyBoardHeight = keyBoardBounds.size.height;
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
-    
+
     float x = 15;
     float y;
     float w = kChatViewWidth;
     float h = kChatViewHeight;
-    
+
     if (!landscape) {
         if (keyboardHidden) {
             y = SCREEN_HEIGHT - kTableHeight - kChatViewHeight  - kInputViewHeight - 10;
@@ -69,10 +69,10 @@
     float y;
     float w;
     float h;
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
-    
+
     if (landscape) {
         if (orientation == UIInterfaceOrientationLandscapeRight && IPHONE_X) {
             x = SAFE_ZOOM_INSETS+10;
@@ -98,7 +98,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[ChatCell class] forCellReuseIdentifier:@"ChatCell"];
     self.tableView.backgroundColor = [UIColor clearColor];
-    
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -117,7 +117,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ChatCell" forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     [(ChatCell *)cell setCellValue:[_chatMsgArray objectAtIndex:indexPath.row]];

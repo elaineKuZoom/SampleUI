@@ -7,23 +7,23 @@
 //
 
 #import "BottomBarView.h"
-#import "HorizontalTableView.h"
-#import "ChatInputView.h"
+#import "InSessionUI/BottomBar/HorizontalTableView.h"
+#import "InSessionUI/Chat/ChatInputView.h"
 
 @implementation ViewItem
 
 - (BOOL)isEqual:(id)object {
-    
+
     if (![object isKindOfClass:[ViewItem class]]) {
         return NO;
     }
-    
+
     ViewItem *newObj = (ViewItem *)object;
-    
+
     if ([_user isEqual:newObj.user] && [_itemName isEqualToString:newObj.itemName] && [_view isEqual:newObj.view]) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -67,7 +67,7 @@
         _viewArray = [NSMutableArray array];
         [self.layer addSublayer:self.gradientLayer];
         [self addSubview:self.thumbTableView];
-        
+
         [self.thumbTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     }
     return self;
@@ -77,12 +77,12 @@
     [super layoutSubviews];
     self.backgroundColor = [UIColor clearColor];
     self.gradientLayer.frame = self.bounds;
-    
+
     self.frame = CGRectMake(0, SCREEN_HEIGHT - kTableHeight - kInputViewHeight, SCREEN_WIDTH, kTableHeight + kInputViewHeight);
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
-    
+
     if (landscape) {
         if (orientation == UIInterfaceOrientationLandscapeRight && IPHONE_X) {
             self.thumbTableView.frame = CGRectMake(SAFE_ZOOM_INSETS+10, 0, kCellHeight*3, kTableHeight);
@@ -97,7 +97,7 @@
         }
     }
     [self updateLayout];
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self scrollToRowPosition];
     });
@@ -127,7 +127,7 @@
         _thumbTableView.dataSource = self;
         _thumbTableView.showsVerticalScrollIndicator = NO;
     }
-    
+
     return _thumbTableView;
 }
 
@@ -135,7 +135,7 @@
     if ([self.viewArray containsObject:item]) {
         return;
     }
-    
+
     [self removeThumberViewItemWithUser:item.user];
 
     LeftLabel *nameLabel = [[LeftLabel alloc] init];
@@ -145,17 +145,17 @@
     nameLabel.font = [UIFont systemFontOfSize:12.0];
     nameLabel.tag = kNameTag;
     [item.view addSubview:nameLabel];
-    
+
     UIImageView *littleSpeaker = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"little_speaker"]];
     littleSpeaker.tag = kSpeakerTag;
     [item.view addSubview:littleSpeaker];
-    
+
     UIImageView *reactionImg = [[UIImageView alloc] init];
     reactionImg.tag = kReactionTag;
     [item.view addSubview:reactionImg];
     reactionImg.hidden = YES;
     item.reactionImg = reactionImg;
-    
+
     UIButton *clickMore = [[UIButton alloc] init];
     [clickMore setBackgroundImage:[UIImage imageNamed:@"icon_video_click_more"] forState:UIControlStateNormal];
     [clickMore setBackgroundImage:[UIImage imageNamed:@"icon_video_click_more"] forState:UIControlStateSelected];
@@ -164,14 +164,14 @@
     [item.view addSubview:clickMore];
     clickMore.hidden = YES;
     item.moreClickBtn = clickMore;
-    
+
     item.view.layer.cornerRadius = 10.0;
     item.view.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     item.view.layer.borderWidth = 1.0;
     [item.view setClipsToBounds:YES];
-    
+
     item.view.transform = CGAffineTransformMakeRotation(M_PI / 2);
-    
+
     [self.viewArray addObject:item];
     [self updateLayout];
 }
@@ -207,7 +207,7 @@
         [alertController addAction:[UIAlertAction actionWithTitle:@"Stop Camera Control"
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
-            
+
             for (ViewItem *item in self.viewArray) {
                 if (item.isPin) {
                     ZoomVideoSDKUser *itemUser = item.user;
@@ -220,7 +220,7 @@
                             hud.label.text = [NSString stringWithFormat:@"Stopped Camera Control"];
                             hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
                             [hud hideAnimated:YES afterDelay:2.f];
-                            
+
                             if ([self.handle respondsToSelector:@selector(removeCameraControlView)]) {
                                 [self.handle removeCameraControlView];
                             }
@@ -230,7 +230,7 @@
             }
                                                           }]];
     }
- 
+
     if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost] || [[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isManager]) {
         [alertController addAction:[UIAlertAction actionWithTitle:@"Remove"
                                                             style:UIAlertActionStyleDefault
@@ -241,12 +241,12 @@
                     if (ret) [_thumbTableView reloadData];
                 }
             }
-        
+
                                                           }]];
     }
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -256,14 +256,14 @@
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
     [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-            
+
 }
 
 - (void)removeThumberViewItem:(ViewItem *)item; {
     if (![self.viewArray containsObject:item]) {
         return;
     }
-    
+
     [self.viewArray removeObject:item];
     [self updateLayout];
 }
@@ -275,12 +275,12 @@
 }
 
 - (void)updateItem:(ViewItem *)item withViewItem:(ViewItem *)newItem {
-    
+
     NSUInteger index = [self.viewArray indexOfObject:item];
     if (index == NSNotFound) {
         return;
     }
-    
+
     for (UIView *view in [newItem.view subviews]) {
         if (view.tag == kNameTag) {
             [view removeFromSuperview];
@@ -289,7 +289,7 @@
             [view removeFromSuperview];
         }
     }
-    
+
     LeftLabel *nameLabel = [[LeftLabel alloc] init];
     nameLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.6];
     nameLabel.text = newItem.itemName;
@@ -297,18 +297,18 @@
     nameLabel.font = [UIFont systemFontOfSize:12.0];
     nameLabel.tag = kNameTag;
     [newItem.view addSubview:nameLabel];
-    
+
     UIImageView *littleSpeaker = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"little_speaker"]];
     littleSpeaker.tag = kSpeakerTag;
     [newItem.view addSubview:littleSpeaker];
-    
+
     newItem.view.layer.cornerRadius = 10.0;
     newItem.view.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     newItem.view.layer.borderWidth = 1.0;
     [newItem.view setClipsToBounds:YES];
-    
+
     newItem.view.transform = CGAffineTransformMakeRotation(M_PI / 2);
-    
+
     [self.viewArray replaceObjectAtIndex:index withObject:newItem];
     [self updateLayout];
 }
@@ -321,7 +321,7 @@
             [removeItem addObject:item];
         }
     }
-    
+
     for (ViewItem *item in removeItem) {
         [self.viewArray removeObject:item];
     }
@@ -359,7 +359,7 @@
             [items addObject:item];
         }
     }
-    
+
     return [items copy];
 }
 
@@ -381,33 +381,33 @@
         [self startThumbViewVideo];
         return;
     }
-    
+
     NSInteger index = [self.viewArray indexOfObject:item];
     if (index == NSNotFound) {
         [self startThumbViewVideo];
         return;
     }
-    
+
     CGFloat startX = kCellHeight * index;
     NSInteger rowHeight = kCellHeight;
     NSInteger offsetY = (NSInteger)(self.thumbTableView.contentOffset.y) % rowHeight;
     BOOL visibleCell = offsetY >= kCellHeight/2.0;
-    
+
     NSIndexPath *indexPath = [self.thumbTableView indexPathForRowAtPoint:CGPointMake(self.thumbTableView.contentOffset.x, startX)];
     if (indexPath.row == NSNotFound) {
         [self startThumbViewVideo];
         return;
     }
-    
+
     if (visibleCell)
     {
         indexPath = [NSIndexPath indexPathForRow: indexPath.row+1 inSection: 0];
     }
-    
+
     if (indexPath.row < self.viewArray.count && indexPath.row != NSNotFound) {
         [self.thumbTableView scrollToRowAtIndexPath: indexPath atScrollPosition: UITableViewScrollPositionTop animated: YES];
     }
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self startThumbViewVideo];
     });
@@ -442,21 +442,21 @@
     if (self.headerHeight > 0) {
         return;
     }
-    
+
     NSInteger rowHeight = kCellHeight;
     NSInteger offsetY = (NSInteger)(self.thumbTableView.contentOffset.y) % rowHeight;
     BOOL visibleCell = offsetY >= kCellHeight/2.0;
-    
+
     NSIndexPath *indexPath = [self.thumbTableView indexPathForRowAtPoint:CGPointMake(self.thumbTableView.contentOffset.x, self.thumbTableView.contentOffset.y)];
     if (indexPath.row == NSNotFound) {
         return;
     }
-    
+
     if (visibleCell)
     {
         indexPath = [NSIndexPath indexPathForRow:indexPath.row+1 inSection: 0];
     }
-    
+
     if (indexPath.row < self.viewArray.count && indexPath.row != NSNotFound) {
         [self.thumbTableView scrollToRowAtIndexPath:indexPath atScrollPosition: UITableViewScrollPositionTop animated: YES];
     }
@@ -464,39 +464,39 @@
 
 #pragma mark - tableView -
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    
+
     CGFloat headerHeight = 0;
     CGFloat margin = SCREEN_WIDTH - self.viewArray.count * kCellHeight;
     if (margin > 0) {
         headerHeight = margin * 0.5 - 5;
     }
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
     if (IS_IPAD || landscape) {
         headerHeight = 0;
     }
-    
+
     UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kCellHeight, headerHeight)];
     header.backgroundColor = [UIColor clearColor];
     return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
     if (IS_IPAD || landscape) {
         self.headerHeight = 0.0;
         return 0.0;
     }
-    
+
     CGFloat margin = SCREEN_WIDTH - self.viewArray.count * kCellHeight;
     if (margin > 0) {
         self.headerHeight = margin * 0.5 - 5.0;
         return self.headerHeight;
     }
-    
+
     self.headerHeight = 0.0;
     return 0.0;
 }
@@ -516,7 +516,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.backgroundColor = [UIColor clearColor];
-    
+
     ViewItem *item = [self.viewArray objectAtIndex:indexPath.row];
     if (!item) {
         return cell;
@@ -527,10 +527,10 @@
             [view removeFromSuperview];
         }
     }
-    
+
     [item.view setFrame:CGRectMake(15, 10, kTableHeight - 15 * 2, kCellHeight - 10)];
     item.view.tag = 5001;
-    
+
     for (UIView *view in item.view.subviews) {
         if (view.tag == kNameTag) {
             view.frame = CGRectMake(0, kTableHeight - 15 * 2 - 24, kCellHeight - 10, 24);
@@ -541,18 +541,18 @@
             view.hidden = !item.isActive;
             [item.view bringSubviewToFront:view];
         }
-        
+
         if (view.tag == kReactionTag) {
             view.frame = CGRectMake(10, 10, video_reaction_size, video_reaction_size);
             [item.view bringSubviewToFront:view];
         }
-        
+
         if (view.tag == kmoreTag) {
             view.frame = CGRectMake(kCellHeight - video_more_size -15, 5, video_more_size, video_more_size);
             [item.view bringSubviewToFront:view];
         }
     }
-    
+
     [cell.contentView addSubview:item.view];
     return cell;
 }
@@ -563,14 +563,14 @@
     if (self.handle && [self.handle respondsToSelector:@selector(pinThumberViewItem:)]) {
         ViewItem *item = [self.viewArray objectAtIndex:indexPath.row];
         [self.handle pinThumberViewItem:item];
-        
+
         NSInteger getUserID = [item.user getUserID];
         NSLog(@"UserID Id = %@", @(getUserID));
-        
+
         for (ViewItem *item in self.viewArray) {
             item.moreClickBtn.hidden = YES;
         }
-        
+
         if ([item.user getUserID] != [[[[ZoomVideoSDK shareInstance] getSession] getMySelf] getUserID]){
             item.moreClickBtn.hidden = NO;
         }
