@@ -18,6 +18,11 @@ let package = Package(
       url: "https://github.com/zoom/videosdk-ios/releases/download/v2.3.10/CptShare.xcframework.zip",
       checksum: "14d5037a0409883c13d86e49d8b91b244852904263a87a6ba0bdf6d5fb698cc4"
     ),
+	.binaryTarget(
+		name: "ZoomTask",
+		url: "https://github.com/zoom/videosdk-ios/releases/download/v2.3.10/ZoomTask.xcframework.zip",
+		checksum: "6d9a84d37a833cbcc04e774e35a00a62511cfdef618907142bb032b3a94e99d6"
+	),
     .target(
       name: "SampleUIObjC",
       dependencies: [
