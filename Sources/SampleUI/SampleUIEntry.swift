@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import SampleUIObjC
+@import SampleUIObjC
 
 @_exported import SampleUIObjC  // so consumers can just `import SampleUI`
 
