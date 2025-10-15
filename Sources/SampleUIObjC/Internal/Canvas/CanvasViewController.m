@@ -15,7 +15,6 @@
 #import "InSessionUI/BottomBar/BottomBarView.h"
 #import "InSessionUI/Chat/ChatView.h"
 #import "Vender/KGModal/KGModal.h"
-#import "AppDelegate.h"
 #import "InSessionUI/SwitchBtn/SwitchBtn.h"
 #import "InSessionUI/More/MoreMenuViewController.h"
 #import "InSessionUI/Storage/SimulateStorage.h"
@@ -194,9 +193,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     [UISceneOrientationHelper addOrientationChangeObserver:self selector:@selector(onDeviceOrientationChangeNotification:)];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLowerThirdNotification:) name:kLowerThirdSavedNoti object:nil];
-
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    delegate.canRotation = YES;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -214,9 +210,6 @@
     [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
     [UIViewController attemptRotationToDeviceOrientation];
 #endif
-
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    delegate.canRotation = NO;
 }
 
 - (void)dealloc {
@@ -310,8 +303,7 @@
             popover.sourceRect = btn.bounds;
             popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
         }
-        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
+        [weakSelf presentViewController:alertController animated:YES completion:nil];
     };
     _topBarView.sessionInfoOnClickBlock = ^(void) {
         [weakSelf showSessionInfo];
@@ -1543,8 +1535,7 @@
         NSLog(@"pHandler  ignore ret %lu",(unsigned long)ret);
                                                       }]];
 
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
+    [self presentViewController:alertController animated:YES completion:nil];
 
 
 }
@@ -1889,8 +1880,7 @@
 //                            popover.sourceRect = btn.bounds;
 //                            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
 //                        }
-                        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                        [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
+                        [self presentViewController:alertController animated:YES completion:nil];
                     }
                 }
             }
@@ -1930,11 +1920,10 @@
             }
         }
     } else if (cmd_type == CmdTpye_Feedback_Push) {
-        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
         vc.type = FeedbackPopViewTpye_Receive;
         vc.modalPresentationStyle = UIModalPresentationPageSheet;
-        [[appDelegate topViewController] presentViewController:vc animated:YES completion:nil];
+        [self presentViewController:vc animated:YES completion:nil];
     } else if (cmd_type == CmdTpye_Feedback_Submit) {
         [[SimulateStorage shareInstance] processFeedbackData:commandContent sendUser:@(sendUser.getUserID)];
     } else if (cmd_type == CmdTpye_Lowerthird) {
