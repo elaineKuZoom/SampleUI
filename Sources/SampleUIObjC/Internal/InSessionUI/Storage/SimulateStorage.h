@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FeedbackPopViewController.h"
-#import "FeedbackSurveyResultTableViewCell.h"
+#import "InSessionUI/Feedback/FeedbackPopViewController.h"
+#import "InSessionUI/Feedback/FeedbackSurveyResultTableViewCell.h"
 
 #define kLowerThirdSavedNoti @"kNoti_LowerThirdSaved"
 

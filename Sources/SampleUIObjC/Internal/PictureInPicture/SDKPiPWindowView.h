@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <ZoomVideoSDK/ZoomVideoSDK.h>
-#import "CanvasViewController.h"
+#import "Canvas/CanvasViewController.h"
+
 
 @interface SDKPiPWindowView : UIView
 
