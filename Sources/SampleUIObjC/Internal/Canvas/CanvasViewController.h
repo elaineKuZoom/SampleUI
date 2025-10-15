@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@import ZoomVideoSDK;
 
 @interface ZoomView : UIView
 @property (nonatomic, strong) ZoomVideoSDKUser *user;
