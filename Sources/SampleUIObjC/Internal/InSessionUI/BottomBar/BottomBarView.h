@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "HorizontalTableView.h"
-#import "SimulateStorage.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
 
 #define CALC_WIDTH ((SCREEN_WIDTH) / 3.0)
 #define kCellHeight (CALC_WIDTH > 135.0 ? 135.0 : CALC_WIDTH)

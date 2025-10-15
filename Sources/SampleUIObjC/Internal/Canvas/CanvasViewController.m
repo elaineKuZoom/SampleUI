@@ -9,23 +9,23 @@
 #import <ReplayKit/ReplayKit.h>
 #import "CanvasViewController.h"
 #import "UISceneOrientationHelper.h"
-#import "TopBarView.h"
-#import "ControlBar.h"
-#import "ChatInputView.h"
-#import "BottomBarView.h"
-#import "ChatView.h"
-#import "KGModal.h"
+#import "InSessionUI/TopBar/TopBarView.h"
+#import "InSessionUI/ControlBar/ControlBar.h"
+#import "InSessionUI/Chat/ChatInputView.h"
+#import "InSessionUI/BottomBar/BottomBarView.h"
+#import "InSessionUI/Chat/ChatView.h"
+#import "Vender/KGModal/KGModal.h"
 #import "AppDelegate.h"
-#import "SwitchBtn.h"
-#import "MoreMenuViewController.h"
-#import "SimulateStorage.h"
-#import "LowerThirdPanel.h"
-#import "AnnoFloatBarView.h"
-#import "SDKCallKitManager.h"
-#import "SDKPiPHelper.h"
-#import "CameraControlView.h"
-#import "DemoTestSubsessionView.h"
-#import "DrawingView.h"
+#import "InSessionUI/SwitchBtn/SwitchBtn.h"
+#import "InSessionUI/More/MoreMenuViewController.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
+#import "InSessionUI/LowerThird/LowerThirdPanel.h"
+#import "InSessionUI/AnnoBarView/AnnoFloatBarView.h"
+#import "PictureInPicture/SDKCallKitManager.h"
+#import "PictureInPicture/SDKPiPHelper.h"
+#import "InSessionUI/CameraControl/CameraControlView.h"
+#import "CanvasDemoTestSubsessionView.h"
+#import "InSessionUI/AnnoBarView/DrawingView.h"
 //#import "SharePreprocessHelper.h"
 
 #import <Photos/Photos.h>
@@ -79,14 +79,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [ZoomVideoSDK shareInstance].delegate = self;
     self.avatarArr = [NSMutableArray array];
-    
+
     [self initSubView];
-    
+
     [UIApplication sharedApplication].idleTimerDisabled = YES;
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mySelfReactionAction:) name:Notification_mySelfReactionAction object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(audioRouteChanged:)
@@ -100,7 +100,7 @@
 - (void)audioRouteChanged:(NSNotification *)notification {
 //    NSDictionary *info = notification.userInfo;
 //    AVAudioSessionRouteChangeReason reason = [info[AVAudioSessionRouteChangeReasonKey] unsignedIntegerValue];
-//    
+//
 //    switch (reason) {
 //        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
 //            NSLog(@" audioRouteChanged New device available");
@@ -112,7 +112,7 @@
 //        default:
 //            break;
 //    }
-//    
+//
 //    AVAudioSessionRouteDescription *previousRoute = info[AVAudioSessionRouteChangePreviousRouteKey];
 //    NSLog(@"audioRouteChangedAudio Previous route: %@", previousRoute);
 }
@@ -126,9 +126,9 @@
 
 - (void)updateFrame {
     self.fullScreenCanvas.frame = self.view.bounds;
-    
+
     [self.topBarView setNeedsLayout];
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
     if (landscape) {
@@ -142,27 +142,27 @@
         self.switchShareBtn.frame = CGRectMake(8, (IPHONE_X ? Top_Height + SAFE_ZOOM_INSETS : Top_Height) + 5, 180, 35);
         self.statisticLabel.frame = CGRectMake(SCREEN_WIDTH - 90 - 16, (IPHONE_X ? Top_Height + SAFE_ZOOM_INSETS : Top_Height), 90, 25);
     }
-    
+
     [self updateLowerThird];
-    
+
     [self.chatView setNeedsLayout];
 
     [self.controlBarView setNeedsLayout];
     if (_bottomView) {
         [self.bottomView setNeedsLayout];
     }
-    
+
     CGRect fullRect = self.fullScreenCanvas.bounds;
     for (UIView *subView in self.fullScreenCanvas.subviews) {
         if (subView.tag == kBackgroudTag) {
             subView.frame = fullRect;
         }
-        
+
         if (subView.tag == kEmojiTag) {
             subView.frame = CGRectMake(fullRect.size.width * 0.25, fullRect.size.height * 0.25, fullRect.size.width * 0.5, fullRect.size.height * 0.5);
         }
     }
-    
+
 //    self.shareView.frame = self.view.bounds;
 //    self.scrollView.frame = self.view.bounds;
 //    self.selectImgView.frame = self.view.bounds;
@@ -187,14 +187,14 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     [UISceneOrientationHelper addOrientationChangeObserver:self selector:@selector(onDeviceOrientationChangeNotification:)];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLowerThirdNotification:) name:kLowerThirdSavedNoti object:nil];
-    
+
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     delegate.canRotation = YES;
 }
@@ -206,15 +206,15 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [UISceneOrientationHelper removeOrientationChangeObserver:self];
-    
+
 #if !TARGET_OS_VISION
     [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
     [UIViewController attemptRotationToDeviceOrientation];
 #endif
-    
+
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     delegate.canRotation = NO;
 }
@@ -252,19 +252,19 @@
 
 
 - (void)initSubView {
-    
+
     [self initfullScreenCanvas];
-    
+
     _topBarView = [[TopBarView alloc] init];
 
     [self updateTitleIsJoined:NO];
-    
+
     __weak CanvasViewController *weakSelf = self;
     _topBarView.endOnClickBlock = ^(void) {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Are you sure that you want to leave the session?"
                                                                                  message:nil
                                                                           preferredStyle:UIAlertControllerStyleActionSheet];
-        
+
         if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isInSubSession] && weakSelf.currentParticipant) {
             [alertController addAction:[UIAlertAction actionWithTitle:@"LeaveSubSesssion"
                                                                 style:UIAlertActionStyleDefault
@@ -273,14 +273,14 @@
                 NSLog(@"returnToMainSession ;%lu",(unsigned long)ret);
                                                               }]];
         }
-        
+
         [alertController addAction:[UIAlertAction actionWithTitle:@"Leave"
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
                                                               [[ZoomVideoSDK shareInstance] leaveSession:NO];
                                                               [weakSelf dismissViewControllerAnimated:YES completion:nil];
                                                           }]];
-        
+
         if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost]) {
             [alertController addAction:[UIAlertAction actionWithTitle:@"End Session"
                                                                 style:UIAlertActionStyleDefault
@@ -296,12 +296,12 @@
                 [[[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper] leaveStreaming];
                 [weakSelf dismissViewControllerAnimated:YES completion:nil];
             }]];
-            
+
         }
-        
+
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         }]];
-        
+
         UIPopoverPresentationController *popover = alertController.popoverPresentationController;
         if (popover)
         {
@@ -316,9 +316,9 @@
     _topBarView.sessionInfoOnClickBlock = ^(void) {
         [weakSelf showSessionInfo];
     };
-    
+
     self.lowerThirdPanel = [[LowerThirdPanel alloc] initWithFrame:CGRectMake(8, CGRectGetMaxY(self.topBarView.frame) + 12, 150, 60)];
-    
+
     [self.view addSubview:_topBarView];
     [self.view addSubview:self.switchShareBtn];
     [self.view addSubview:self.statisticLabel];
@@ -331,7 +331,7 @@
         _bottomView.frame = CGRectMake(0, SCREEN_HEIGHT - kTableHeight, SCREEN_WIDTH, kTableHeight);
         [self.view addSubview:_bottomView];
     }
-    
+
     return _bottomView;
 }
 
@@ -347,7 +347,7 @@
         [_switchShareBtn addTarget:self action:@selector(switchToShare:) forControlEvents:UIControlEventTouchUpInside];
         _switchShareBtn.hidden = YES;
     }
-    
+
     return _switchShareBtn;
 }
 
@@ -429,17 +429,17 @@
 - (void)initfullScreenCanvas {
     self.fullScreenCanvas = [[ZoomView alloc] initWithFrame:self.view.bounds];
     self.fullScreenCanvas.backgroundColor = [UIColor blackColor];
-    
+
     // subscribe my video;
     ZoomVideoSDKUser *mySelfUser = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     self.fullScreenCanvas.user = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     self.fullScreenCanvas.dataType = ZoomVideoSDKVideoType_VideoData;
     [[mySelfUser getVideoCanvas] subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_LetterBox andResolution:ZoomVideoSDKVideoResolution_Auto];
     [[SDKPiPHelper shared] updatePiPVideoUser:mySelfUser videoType:ZoomVideoSDKVideoType_VideoData];
-    
+
     [self startUpdateTimer];
     [self.view addSubview:self.fullScreenCanvas];
-    
+
     self.fullScreenCanvas.userInteractionEnabled = YES;
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onSingleTap)];
     [self.fullScreenCanvas addGestureRecognizer:tapGesture];
@@ -450,7 +450,7 @@
         [self.chatInputView hideKeyBoard];
         return;
     }
-    
+
     if (self.chatView.hidden == NO) {
         [UIView animateWithDuration:0.3 animations:^{
             self.chatView.hidden = YES;
@@ -488,11 +488,11 @@
     [self stopThumbViewVideo];
     [self.bottomView removeAllThumberViewItem];
     [self.avatarArr removeAllObjects];
-    
+
     [self stopUpdateTimer];
-    
+
     [[SimulateStorage shareInstance] clearUp];
-    
+
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -523,10 +523,10 @@
 - (UIView*)alertViewOfSessionInfo {
     UIView *dialogView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 280, 237)];
     dialogView.layer.masksToBounds = YES;
-    
+
     NSArray *userArr = [[[ZoomVideoSDK shareInstance] getSession] getRemoteUsers];
     ZoomVideoSDKSession *session = [[ZoomVideoSDK shareInstance] getSession];
-    
+
     //Title Label
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(24, 21, 256, 24)];
     titleLabel.text = NSLocalizedString(@"Session Information", @"");
@@ -534,28 +534,28 @@
     titleLabel.textAlignment = NSTextAlignmentLeft;
     titleLabel.font = [UIFont boldSystemFontOfSize:20];
     [dialogView addSubview:titleLabel];
-    
+
     UILabel *sessionNameTitle = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(titleLabel.frame) + 25, 256, 20)];
     sessionNameTitle.text = NSLocalizedString(@"Session name", @"");
     sessionNameTitle.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     sessionNameTitle.textAlignment = NSTextAlignmentLeft;
     sessionNameTitle.font = [UIFont systemFontOfSize:12.0];
     [dialogView addSubview:sessionNameTitle];
-    
+
     UILabel *sessionNameValue = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(sessionNameTitle.frame), 256, 16)];
     sessionNameValue.text = session.getSessionName;
     sessionNameValue.textColor = RGBCOLOR(0x23, 0x23, 0x23);
     sessionNameValue.textAlignment = NSTextAlignmentLeft;
     sessionNameValue.font = [UIFont boldSystemFontOfSize:16.0];
     [dialogView addSubview:sessionNameValue];
-    
+
     UILabel *pswTitle = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(sessionNameValue.frame) + 20, 256, 20)];
     pswTitle.text = NSLocalizedString(@"Password", @"");
     pswTitle.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     pswTitle.textAlignment = NSTextAlignmentLeft;
     pswTitle.font = [UIFont systemFontOfSize:12.0];
     [dialogView addSubview:pswTitle];
-    
+
     BOOL hasPassword = (session.getSessionPassword && ![session.getSessionPassword isEqualToString:@""]);
     UILabel *pswValue = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(pswTitle.frame), 256, 16)];
     pswValue.text = hasPassword ? session.getSessionPassword : @"Not Set";
@@ -563,14 +563,14 @@
     pswValue.textAlignment = NSTextAlignmentLeft;
     pswValue.font = [UIFont boldSystemFontOfSize:16.0];
     [dialogView addSubview:pswValue];
-    
+
     UILabel *participantsTitle = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(pswValue.frame) + 20, 256, 20)];
     participantsTitle.text = NSLocalizedString(@"Participants", @"");
     participantsTitle.textColor = RGBCOLOR(0x74, 0x74, 0x87);
     participantsTitle.textAlignment = NSTextAlignmentLeft;
     participantsTitle.font = [UIFont systemFontOfSize:12.0];
     [dialogView addSubview:participantsTitle];
-    
+
     NSUInteger count = userArr.count + 1;
     UILabel *pValue = [[UILabel alloc] initWithFrame:CGRectMake(24, CGRectGetMaxY(participantsTitle.frame), 256, 16)];
     pValue.text = [NSString stringWithFormat:@"%@", @(count)];
@@ -578,7 +578,7 @@
     pValue.textAlignment = NSTextAlignmentLeft;
     pValue.font = [UIFont boldSystemFontOfSize:16.0];
     [dialogView addSubview:pValue];
-    
+
     return dialogView;
 }
 
@@ -603,7 +603,7 @@
                                                         [hud hideAnimated:YES afterDelay:2.f];
                                                         return;
                                                     }
-                                                      
+
                                                     if (@available(iOS 12.0, *)) {
                                                         RPSystemBroadcastPickerView *broadcastView = [[RPSystemBroadcastPickerView alloc] init];
                                                         broadcastView.preferredExtension = kScreenShareBundleId;
@@ -629,16 +629,16 @@
                                                           [hud hideAnimated:YES afterDelay:2.f];
                                                           return;
                                                       }
-                                                      
+
                                                       UIImagePickerController *controller = [[UIImagePickerController alloc] init];
                                                       controller.delegate = self;
                                                       controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
                                                       [self presentViewController:controller animated:YES completion:^{
-                                                          
+
                                                           if (self.annoHelper) [[[ZoomVideoSDK shareInstance] getShareHelper] destroyAnnotationHelper:self.annoHelper];
                                                           self.annoHelper = [[[ZoomVideoSDK shareInstance] getShareHelper] createAnnotationHelper:nil];
                                                           [[[ZoomVideoSDK shareInstance] getShareHelper] setAnnotationView:controller.view];
-                                                          
+
                                                           if (self.annoHelper) {
                                                               [self.annoFloatBarView removeFromSuperview];
                                                               if (![self.annoFloatBarView isDescendantOfView:controller.view]) {
@@ -675,7 +675,7 @@
                                                           [hud hideAnimated:YES afterDelay:2.f];
                                                           return;
                                                       }
-                                                      
+
                                                       UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
                                                       BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
                                                       CGFloat bottom = IPHONE_X ? (landscape ? 21.f : 34.f) : 0.0;
@@ -702,7 +702,7 @@
                                                   } ];
                                               }]];
     [sheet addAction:[UIAlertAction actionWithTitle:@"Close" style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = sheet.popoverPresentationController;
     if (popover)
     {
@@ -711,7 +711,7 @@
         popover.sourceRect = btn.bounds;
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
-    
+
     [self presentViewController:sheet animated:YES completion:nil];
 }
 
@@ -721,7 +721,7 @@
         RPSystemBroadcastPickerView *broadcastView = [self.view viewWithTag:kBroadcastPickerTag];
         if (!broadcastView) return;
 
-        
+
         for (UIView *subView in broadcastView.subviews) {
             if ([subView isKindOfClass:[UIButton class]])
             {
@@ -738,14 +738,14 @@
     [self stopThumbViewVideo];
     [self.bottomView removeAllThumberViewItem];
     [self.avatarArr removeAllObjects];
-    
+
     [UIView animateWithDuration:0.3 animations:^{
         [self.chatView removeFromSuperview];
         [self.chatInputView removeFromSuperview];
         [self.controlBarView removeFromSuperview];
         self.statisticLabel.alpha = 0.0;
     }];
-    
+
     [self updateTitleIsJoined:NO];
     ZoomVideoSDKUser *my = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     self.fullScreenCanvas.user = my;
@@ -758,21 +758,21 @@
 - (void)showZoomPasswordAlert:(BOOL)wrongPwd
 {
     NSString *message = wrongPwd ? NSLocalizedString(@"Incorrect password, please try again", @"") : NSLocalizedString(@"Please enter your password", @"");
-    
+
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    
+
     [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"Password";
         textField.secureTextEntry = YES;
     }];
-    
+
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         if (self.joinSessionOrIgnorePasswordBlock) {
             ZoomVideoSDKError error = self.joinSessionOrIgnorePasswordBlock(nil, YES);
             NSLog(@"Cancel error code : %@", @(error));
         }
     }];
-    
+
     UIAlertAction *joinAction = [UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         if (self.joinSessionOrIgnorePasswordBlock) {
             NSString *password = alert.textFields.firstObject.text;
@@ -783,17 +783,17 @@
             NSLog(@"Input password error code : %@", @(error));
         }
     }];
-    
+
     [alert addAction:cancelAction];
     [alert addAction:joinAction];
-    
+
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 
 #pragma mark - uiimagepicker delegate -
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
+
     self.shareView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT*0.3, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5)];//CGRectMake(0, SCREEN_HEIGHT*0.3, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5)
     UIImage *selectPic = info[UIImagePickerControllerOriginalImage];
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5)];//CGRectMake(0, 0, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5)
@@ -808,23 +808,23 @@
     doubleTap.numberOfTapsRequired = 2;
     doubleTap.numberOfTouchesRequired = 1;
     [self.scrollView addGestureRecognizer:doubleTap];
-    
+
     self.selectImgView = [[UIImageView alloc] initWithImage:selectPic];
     self.selectImgView.contentMode = UIViewContentModeScaleAspectFit;
     self.selectImgView.frame = CGRectMake(0, 0, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5);//CGRectMake(0, 0, SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.5)
-    
+
     [self.scrollView addSubview:self.selectImgView];
     [self.shareView addSubview:self.scrollView];
     [self.view addSubview:self.shareView];
     [picker dismissViewControllerAnimated:YES completion:nil];
-    
+
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
     CGFloat bottom = IPHONE_X ? (landscape ? 21.f : 34.f) : 0.0;
     CGFloat right = IPHONE_X ? 44.0 : 0.0;
     CGFloat width = 104.0;
     CGFloat height = 28.0;
-    
+
     self.stopShareBtn = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH - width - 16 - right, SCREEN_HEIGHT - 16 - height - bottom, width, height)];
     [self.stopShareBtn setTitle:@"STOP SHARE" forState:UIControlStateNormal];
     self.stopShareBtn.clipsToBounds = YES;
@@ -833,16 +833,16 @@
     self.stopShareBtn.backgroundColor = [UIColor redColor];
     [self.stopShareBtn addTarget:self action:@selector(stopShareBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.stopShareBtn];
-    
+
 //    1. normal share with view
     [[[ZoomVideoSDK shareInstance] getShareHelper] startShareWithView:self.shareView];
-    
+
 //    2. share with startShareWithPreprocessing:sharePreprocessor:
 //    ZoomVideoSDKSharePreprocessParam *param = [ZoomVideoSDKSharePreprocessParam new];
 //    param.type = ZoomVideoSDKSharePreprocessType_view;
 //    param.view = self.shareView;
 //    [[[ZoomVideoSDK shareInstance] getShareHelper] startShareWithPreprocessing:param sharePreprocessor:[SharePreprocessHelper shareInstance]];
-    
+
     if (self.annoHelper) [[[ZoomVideoSDK shareInstance] getShareHelper] destroyAnnotationHelper:self.annoHelper];
     self.annoHelper = [[[ZoomVideoSDK shareInstance] getShareHelper] createAnnotationHelper:nil];
     if (self.annoHelper) {
@@ -872,15 +872,15 @@
 - (CGRect)zoomRectForScale:(float)scale withCenter:(CGPoint)center
 {
     CGRect zoomRect;
-    
+
     CGFloat w = [self.scrollView frame].size.width;
     CGFloat h = [self.scrollView frame].size.height;
     zoomRect.size.height = h / scale;
     zoomRect.size.width  = w / scale;
-    
+
     CGFloat x = center.x - (zoomRect.size.width  / 2.0);
     CGFloat y = center.y - (zoomRect.size.height / 2.0);
-    
+
     CGSize shareSource = self.view.bounds.size;
     CGFloat offsetX = fabs(shareSource.width / scale - w) / 2;
     CGFloat offsetY = fabs(shareSource.height / scale - h) / 2;
@@ -890,7 +890,7 @@
     if (y > offsetY && (y + zoomRect.size.height) * scale > shareSource.height) y = (shareSource.height - h) / scale;
     zoomRect.origin.x = x;
     zoomRect.origin.y = y;
-    
+
     return zoomRect;
 }
 
@@ -898,14 +898,14 @@
     NSLog(@"stop share");
     [self.shareView removeFromSuperview];
     [self.stopShareBtn removeFromSuperview];
-    
+
     [[[ZoomVideoSDK shareInstance] getShareHelper] destroyAnnotationHelper:self.annoHelper];
     [self.annoFloatBarView updateAnnoHelper:nil];
     [self.annoFloatBarView removeFromSuperview];
     self.annoHelper = nil;
-    
+
     [[[ZoomVideoSDK shareInstance] getShareHelper] stopShare];
-    
+
     [self pinMyself];
 }
 
@@ -915,7 +915,7 @@
 {
     NSLog(@"ErrorType========%@, %@",@(ErrorType), [self formatErrorString:ErrorType]);
     NSLog(@"ErrorDetails========%@",@(details));
-    
+
     switch (ErrorType) {
         case Errors_Session_Join_Failed:
         {
@@ -934,7 +934,7 @@
         default:
             break;
     }
-    
+
     NSString *string = [self formatErrorString:ErrorType];
     if (string) {
         string = [string stringByAppendingFormat:@". Error code: %@", @(details)];
@@ -953,27 +953,27 @@
 
 - (void)onSessionJoin {
     NSLog(@"onSessionJoin====>");
-    
+
     [[SDKCallKitManager sharedManager] startCallWithHandle:@"testemail@zoom.us" complete:^{
         NSLog(@" ----CallKitManager startCall Complete ------");
         [[SDKPiPHelper shared] presetPiPWithSrcView:self.view];
     }];
-    
+
     _chatView = [[ChatView alloc] init];
     [self.view addSubview:_chatView];
     _chatView.userInteractionEnabled = YES;
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onSingleTap)];
     [_chatView addGestureRecognizer:tapGesture];
-    
+
     self.chatInputView = [[ChatInputView alloc] initWithView:self.view];
     self.chatInputView.delegate = self;
     [self.view addSubview:self.chatInputView];
     self.chatInputView.hidden = NO;
-    
+
     [self.view addSubview:self.controlBarView];
-    
+
     [self updateTitleIsJoined:YES];
-    
+
     ZoomVideoSDKUser *mySelf = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     if (mySelf) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -989,7 +989,7 @@
     NSLog(@"onSessionLeave====>");
     [self cleanUp];
     [self leave];
-    
+
     [[SDKPiPHelper shared] cleanUpPictureInPicture];
     [[SDKCallKitManager sharedManager] endCallWithComplete:^{
         NSLog(@"----CallKitManager endCall Complete ------");
@@ -1001,30 +1001,30 @@
     self.fullScreenCanvas.user = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     NSMutableArray *allUser = [[[[ZoomVideoSDK shareInstance] getSession] getRemoteUsers] mutableCopy];
     [allUser addObject:[[[ZoomVideoSDK shareInstance] getSession] getMySelf]];
-    
+
     for (int i = 0; i < allUser.count; i++) {
         ZoomVideoSDKUser *user = allUser[i];
         if ([self.avatarArr containsObject:user]) {
             continue;
         }
-        
+
         [self.avatarArr addObject:user];
-        
+
         ZoomView *view = [[ZoomView alloc] initWithFrame:CGRectMake(15, 10, kTableHeight - 15 * 2, kCellHeight - 10)];
         view.user = user;
         view.backgroundColor = [UIColor blackColor];
         view.dataType = ZoomVideoSDKVideoType_VideoData;
-        
+
         [[user getVideoCanvas] subscribeWithView:view aspectMode:ZoomVideoSDKVideoAspect_PanAndScan andResolution:ZoomVideoSDKVideoResolution_Auto];
-        
+
         ViewItem *item = [[ViewItem alloc] init];
         item.user = user;
         item.view = view;
         item.isActive = NO;
         item.itemName = user.getUserName;
-        
+
         [self.bottomView addThumberViewItem:item];
-        
+
         if (!helper) {
             [self viewItemSelected:item];
         }
@@ -1036,14 +1036,14 @@
     if (![[[ZoomVideoSDK shareInstance] getShareHelper] isSharingOut]) {
         [self.view bringSubviewToFront:self.chatInputView];
     }
-    
+
     [self updateTitleIsJoined:YES];
 }
 
 - (void)onUserLeave:(ZoomVideoSDKUserHelper *)helper users:(NSArray<ZoomVideoSDKUser *> *)userArray {
     for (int i = 0; i < userArray.count; i++) {
         ZoomVideoSDKUser *user = userArray[i];
-        
+
         NSArray *items = [self.bottomView getThumberViewItems:user];
         for (ViewItem *item in items) {
             ZoomView *view = (ZoomView *)item.view;
@@ -1056,12 +1056,12 @@
         }
         [self.bottomView removeThumberViewItemWithUser:user];
         [self.avatarArr removeObject:user];
-        
+
         if (self.fullScreenCanvas.user == user) {
             [self pinMyself];
         }
     }
-    
+
     [self updateTitleIsJoined:YES];
 }
 
@@ -1077,7 +1077,7 @@
     if (!canvas) {
         return;
     }
-    
+
     NSMutableArray *needRemove = [NSMutableArray new];
     for (UIView *view in [canvas subviews]) {
         if (view.tag == kEmojiTag) {
@@ -1088,7 +1088,7 @@
         }
     }
     [needRemove makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
+
     BOOL isVideoOn = user.getVideoCanvas.videoStatus.on ;
     NSLog(@"user:%@   .isVideoOn=======%@",[user getUserName],@(isVideoOn));
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1099,7 +1099,7 @@
             bgView.tag = kBackgroudTag;
             [canvas addSubview:bgView];
             [canvas insertSubview:bgView atIndex:1];
-            
+
             ZoomVideoSDKUser *litter_user = user;
             NSInteger index = [self.avatarArr indexOfObject:litter_user];
             if (index == NSNotFound) index = 0;
@@ -1136,7 +1136,7 @@
         if (user == self.fullScreenCanvas.user) {
             [self updateAvatar:self.fullScreenCanvas user:user];
         }
-        
+
         // update bottom cavas avatar
         ZoomView *canvas = [self getBottomCanvsViewByUser:user];
         [self updateAvatar:canvas user:user];
@@ -1152,7 +1152,7 @@
     if ([user isEqual:myUser]) {
         return;
     }
-    
+
     if (status == ZoomVideoSDKReceiveSharingStatus_Start) {
         self.fullScreenCanvas.dataType = ZoomVideoSDKVideoType_ShareData;
         self.fullScreenCanvas.shareAction = shareAction;
@@ -1164,10 +1164,10 @@
         [[user getVideoCanvas] subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_LetterBox andResolution:ZoomVideoSDKVideoResolution_Auto];
         [[SDKPiPHelper shared] updatePiPVideoUser:user videoType:ZoomVideoSDKVideoType_VideoData];
     }
-    
+
     self.fullScreenCanvas.user = user;
     [self updateAvatar:self.fullScreenCanvas user:user];
-    
+
     if (status == ZoomVideoSDKReceiveSharingStatus_Start) {
         self.switchShareBtn.sharedUser = user;
         NSArray *viewItems = [self.bottomView getThumberViewItems:user];
@@ -1180,7 +1180,7 @@
             [self stopThumbViewVideo];
             [self.bottomView scrollToVisibleArea:item];
         });
-        
+
         if (self.annoHelper) [[[ZoomVideoSDK shareInstance] getShareHelper] destroyAnnotationHelper:self.annoHelper];
         self.annoHelper = [[[ZoomVideoSDK shareInstance] getShareHelper] createAnnotationHelper:self.fullScreenCanvas];
         if (self.annoHelper) {
@@ -1198,7 +1198,7 @@
         }
         self.switchShareBtn.sharedUser = nil;
     }
-    
+
     for (ViewItem *item in self.bottomView.viewArray) {
         if ([user isEqual:item.user]) {
             [self viewItemSelected:item];
@@ -1216,7 +1216,7 @@
     for (ZoomVideoSDKUser *user in userArray) {
         [self.bottomView activeThumberViewItem:user];
     }
-    
+
     [self startSpeakerTimer];
 }
 
@@ -1283,7 +1283,7 @@
 {
     if (completion) {
         self.joinSessionOrIgnorePasswordBlock = completion;
-        
+
         [self showZoomPasswordAlert:NO];
     }
 }
@@ -1292,7 +1292,7 @@
 {
     if (completion) {
         self.joinSessionOrIgnorePasswordBlock = completion;
-        
+
         [self showZoomPasswordAlert:YES];
     }
 }
@@ -1311,9 +1311,9 @@
         self.multipUserView.user = user;
         self.multipUserView.backgroundColor = [UIColor blackColor];
         self.multipUserView.dataType = videoCanvas.canvasType;
-        
+
         [videoCanvas subscribeWithView:self.multipUserView aspectMode:ZoomVideoSDKVideoAspect_PanAndScan andResolution:ZoomVideoSDKVideoResolution_Auto];
-        
+
         [self.view addSubview:self.multipUserView];
     } else if (status == ZoomVideoSDKMultiCameraStreamStatus_VideoOn) {
         if (self.fullScreenCanvas)
@@ -1322,7 +1322,7 @@
         [videoCanvas unSubscribeWithView:self.multipUserView];
         [self.multipUserView removeFromSuperview];
     }
-        
+
     NSLog(@"---%s   --%@",__FUNCTION__,@(status));
 }
 
@@ -1332,7 +1332,7 @@
 
 - (void)onSystemPermissionRequired:(ZoomVideoSDKSystemPermissionType)permissionType
 {
-    
+
     NSString *alertTitle = @"system permission needed";
     switch (permissionType) {
         case ZoomVideoSDKSystemPermissionType_Camera:
@@ -1345,7 +1345,7 @@
             break;
     }
     NSString *alertMsg = @"please turn on the toggle in system settings to grant permission";
-    
+
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:alertTitle
                                                                              message:alertMsg
                                                                       preferredStyle:UIAlertControllerStyleAlert];
@@ -1530,14 +1530,14 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Help:%@ %@",[pHandler getRequestUserName],[pHandler getRequestSubSessionName]]
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"joinSubSessionByUserRequest"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         ZoomVideoSDKError ret = [pHandler joinSubSessionByUserRequest];
         NSLog(@"pHandler  joinSubSessionByUserRequest ret %lu",(unsigned long)ret);
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"ignore" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         ZoomVideoSDKError ret = [pHandler ignore];
         NSLog(@"pHandler  ignore ret %lu",(unsigned long)ret);
@@ -1545,8 +1545,8 @@
 
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-    
-    
+
+
 }
 - (void)onSubSessionUserHelpRequestResult:(ZoomVideoSDKUserHelpRequestResult)result {
     NSLog(@"%s    %@  ",__FUNCTION__,@(result));
@@ -1599,9 +1599,9 @@
             self.fullScreenCanvas.isBroadcastStreamingViewer = YES;
         }
             break;
-            
+
         case ZoomVideoSDKStreamingJoinStatus_Left:
-            
+
             break;
         default:
             break;
@@ -1613,11 +1613,11 @@
 - (void)sendAction:(NSString *)chatString
 {
     NSLog(@"chatString===>%@",chatString);
-    
+
     if (chatString.length == 0) {
         return;
     }
-    
+
     [[[ZoomVideoSDK shareInstance] getChatHelper] SendChatToAll:chatString];
 }
 
@@ -1636,11 +1636,11 @@
 
 - (void)startThumbViewVideo {
     NSArray <UITableViewCell *> *cellArray = self.bottomView.thumbTableView.visibleCells;
-    
+
     for (int i = 0; i < cellArray.count; i++) {
         UITableViewCell *cell = [cellArray objectAtIndex:i];
         NSIndexPath *indexPath = [self.bottomView.thumbTableView indexPathForCell:cell];
-        
+
         ViewItem *item = [self.bottomView.viewArray objectAtIndex:indexPath.row];
         ZoomView *view = (ZoomView *)item.view;
         view.dataType = ZoomVideoSDKVideoType_VideoData;
@@ -1650,37 +1650,37 @@
 }
 
 - (void)pinThumberViewItem:(ViewItem *)item {
-    
+
     if (!item) {
         return;
     }
-    
+
     NSLog(@"Pin thumbernail view %@", item);
     ZoomVideoSDKUser *itemUser = item.user;
-    
+
     ZoomVideoSDKUser *olduser = self.fullScreenCanvas.user;
-    
+
     self.fullScreenCanvas.user = itemUser;
     self.fullScreenCanvas.dataType = ZoomVideoSDKVideoType_VideoData;
     [[itemUser getVideoCanvas] subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_PanAndScan andResolution:ZoomVideoSDKVideoResolution_Auto];
     [[SDKPiPHelper shared] updatePiPVideoUser:itemUser videoType:ZoomVideoSDKVideoType_VideoData];
-    
+
     if (olduser.getVideoCanvas.videoStatus.on != itemUser.getVideoCanvas.videoStatus.on && self.fullScreenCanvas.dataType != ZoomVideoSDKVideoType_ShareData) {
          [self updateAvatar:self.fullScreenCanvas user:itemUser];;
     }
-    
+
     [self viewItemSelected:item];
     for (ViewItem *item in self.bottomView.viewArray) {
         item.isPin = NO;
     }
     item.isPin = YES;
-    
+
     [self updateTitleIsJoined:YES];
-    
+
     if (self.switchShareBtn.sharedUser) {
         self.switchShareBtn.hidden = NO;
     }
-    
+
     [self updateLowerThird];
 }
 
@@ -1688,7 +1688,7 @@
     if (!item) {
         return;
     }
-    
+
     UIView *view = item.view;
     ZoomVideoSDKUser *itemUser = item.user;
     [[itemUser getVideoCanvas] subscribeWithView:view aspectMode:ZoomVideoSDKVideoAspect_PanAndScan andResolution:ZoomVideoSDKVideoResolution_Auto];
@@ -1708,22 +1708,22 @@
     for (ViewItem *item in self.bottomView.viewArray) {
         item.view.layer.borderColor = [UIColor colorWithWhite:1.0 alpha:0.5].CGColor;
     }
-    
+
     item.view.layer.borderColor = [UIColor greenColor].CGColor;
 }
 
 - (void)switchToShare:(SwitchBtn *)switchShareBtn {
     switchShareBtn.hidden = YES;
-    
+
     if (!switchShareBtn.sharedUser) {
         return;
     }
-    
+
     self.fullScreenCanvas.dataType = ZoomVideoSDKVideoType_ShareData;
     self.fullScreenCanvas.user = switchShareBtn.sharedUser;
     [[self.fullScreenCanvas.shareAction getShareCanvas] subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_Original andResolution:ZoomVideoSDKVideoResolution_Auto];
     [[SDKPiPHelper shared] updatePiPVideoUser:switchShareBtn.sharedUser videoType:ZoomVideoSDKVideoType_ShareData];
-    
+
     if (self.annoHelper) [[[ZoomVideoSDK shareInstance] getShareHelper] destroyAnnotationHelper:self.annoHelper];
     self.annoHelper = [[[ZoomVideoSDK shareInstance] getShareHelper] createAnnotationHelper:self.fullScreenCanvas];
     if (self.annoHelper) {
@@ -1732,7 +1732,7 @@
         }
         [self.annoFloatBarView updateAnnoHelper:self.annoHelper];
     }
-    
+
     for (ViewItem *item in self.bottomView.viewArray) {
         if ([switchShareBtn.sharedUser isEqual:item.user]) {
             [self viewItemSelected:item];
@@ -1771,7 +1771,7 @@
     if (!session) {
         beforeSession = YES;
     }
-    
+
     if (beforeSession) {
         [self.topBarView updateTopBarWithSessionName:session.getSessionName totalNum:1 password:session.getSessionPassword isJoined:isJoined];
     } else {
@@ -1788,7 +1788,7 @@
     if ([self.updateTimer isValid]) {
         [self stopUpdateTimer];
     }
-    
+
     if (@available(iOS 10.0, *)) {
         __weak typeof(self) wself = self;
         wself.updateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES
@@ -1818,7 +1818,7 @@
         ZoomVideoSDKShareStatisticInfo *info = [user getShareStatisticInfo];
         statisticStr = [NSString stringWithFormat:@"%@x%@ %@FPS", @(info.width), @(info.height), @(info.fps)];
     }
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![statisticStr isEqualToString:@"0x0 0FPS"]) {
             self.statisticLabel.hidden = NO;
@@ -1843,7 +1843,7 @@
 - (void)onCommandReceived:(NSString * _Nullable)commandContent sendUser:(ZoomVideoSDKUser * _Nullable)sendUser
 {
     NSLog(@"commandContent:%@, sendUser:%@", commandContent, sendUser);
-    
+
     if ([commandContent hasPrefix:@"Part|"])
     {
         [self.assembler addPart:commandContent];
@@ -1853,10 +1853,10 @@
         }
         return;
     }
-    
+
     if ([self handleWithDrawingData:commandContent sendUser:sendUser])
         return;
-    
+
     NSData *jsonData = [commandContent dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
@@ -1870,17 +1870,17 @@
                         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Join session:%@ %@",[kit getSubSessionName],[kit getSubSessionID]]
                                                                                                  message:nil
                                                                                           preferredStyle:UIAlertControllerStyleActionSheet];
-                        
+
                         [alertController addAction:[UIAlertAction actionWithTitle:@"Join"
                                                                             style:UIAlertActionStyleDefault
                                                                           handler:^(UIAlertAction *action) {
                             ZoomVideoSDKError ret = [kit joinSubSession];
                             NSLog(@"joinSubSession ret %lu",(unsigned long)ret);
                                                                           }]];
-                        
+
                         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                         }]];
-                        
+
 //                        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
 //                        if (popover)
 //                        {
@@ -1895,15 +1895,15 @@
                 }
             }
             else if ([dict[@"action"] isEqualToString:@"leave"])  {
-                
+
             }
             return;
         }
     } else {
         NSLog(@"dict failed: %@", error.localizedDescription);
     }
-    
-    
+
+
     CmdTpye cmd_type = [[SimulateStorage shareInstance] getCmdTypeFromCmd:commandContent];
     if (cmd_type == CmdTpye_Reaction) {
         for (ViewItem *item in self.bottomView.viewArray) {
@@ -1911,7 +1911,7 @@
                 kTagReactionTpye reaction_type = [[SimulateStorage shareInstance] getReactionTypeFromCmd:commandContent];
                 item.reactionImg.image = [[SimulateStorage shareInstance] getReactionImageFromType:reaction_type];
                 item.reactionImg.hidden = NO;
-                
+
                 NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
                 [dict setObject:item.reactionImg forKey:@"reaction_imageview"];
                 [dict setObject:commandContent forKey:@"command_content"];
@@ -1981,7 +1981,7 @@
 - (void)onCmdChannelConnectResult:(BOOL)success
 {
     NSLog(@"[onCmdChannelConnectResult] result:%@",@(success));
-    
+
     if (success)
         [[SimulateStorage shareInstance] sendMyLowerThird];
 }
@@ -1999,7 +1999,7 @@
         } else {
             self.lowerThirdPanel.frame = CGRectMake(8, CGRectGetMaxY(self.switchShareBtn.frame) + 12, 150, 60);
         }
-        
+
         LowerThirdCmd *cmd = [[SimulateStorage shareInstance] getUsersLowerThird:self.fullScreenCanvas.user];
         if ([SimulateStorage isLowerThirdEnabled] && cmd) {
             [self.lowerThirdPanel setLowerThird:cmd];
@@ -2044,7 +2044,7 @@
         _annoFloatBarView = [[AnnoFloatBarView alloc] initWithAnnoHelper:self.annoHelper];
     }
     _annoFloatBarView.frame = CGRectMake(0, self.view.frame.size.height-300, 320, 100);
-    
+
     return _annoFloatBarView;
 }
 
@@ -2060,7 +2060,7 @@
 #endif
         _drawingView.delegate = self;
     }
-    
+
     return _drawingView;
 }
 
@@ -2076,7 +2076,7 @@
 - (void)drawingShapeWithJSONString:(NSString *)jsonString
 {
     NSString *cmdStr = [DrawingViewDataHelper stringForDrawingShapeEvent:DrawingShapeEventTypeContent content:jsonString];
-    
+
     NSUInteger maxChunkLength = 500;
     NSUInteger fullLength = cmdStr.length;
     NSUInteger totalParts = (fullLength + maxChunkLength - 1) / maxChunkLength;
@@ -2090,13 +2090,13 @@
     for (NSUInteger offset = 0; offset < fullLength; offset += maxChunkLength) {
         NSUInteger thisChunkLength = MIN(maxChunkLength, fullLength - offset);
         NSString *chunk = [cmdStr substringWithRange:NSMakeRange(offset, thisChunkLength)];
-        
+
         // Part|{index}|{total}|{chunk}
         NSString *labeledChunk = [NSString stringWithFormat:@"Part|%lu|%lu|%@", (unsigned long)partNumber, (unsigned long)totalParts, chunk];
         [messageParts addObject:labeledChunk];
         partNumber++;
     }
-    
+
     [self processMessageParts:messageParts];
 }
 
@@ -2139,7 +2139,7 @@
             self.cameraControlHelper = user.getRemoteCameraControlHelper;
             [self.view addSubview:self.cameraControlView];
             self.bottomView.isCameraControl = YES;
-            
+
         } else {
             self.bottomView.isCameraControl = NO;
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -2160,7 +2160,7 @@
         _cameraControlView.delegate = self;
         _cameraControlView.hidden = NO;
     }
-    
+
     return _cameraControlView;
 }
 
@@ -2177,7 +2177,7 @@
                     hud.label.text = [NSString stringWithFormat:@"Stopped Camera Control"];
                     hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
                     [hud hideAnimated:YES afterDelay:2.f];
-                    
+
                     [self removeCameraControlView];
                 }
             }
