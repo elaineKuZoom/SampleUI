@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@import ZoomVideoSDK;
 #import "InSessionUI/Feedback/FeedbackPopViewController.h"
 #import "InSessionUI/Feedback/FeedbackSurveyResultTableViewCell.h"
 
