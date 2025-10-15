@@ -153,7 +153,6 @@
     } else {
         [SimulateStorage hasPopConfirmView:YES];
 
-        AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
         vc.type = FeedbackPopViewTpye_Push;
         vc.modalPresentationStyle = UIModalPresentationPageSheet;
@@ -161,7 +160,7 @@
         vc.pushOnClickBlock = ^(void) {
             [weakSelf beginTimer];
         };
-        [[appDelegate topViewController] presentViewController:vc animated:YES completion:nil];
+        [self presentViewController:vc animated:YES completion:nil];
     }
 }
 

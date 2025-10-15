@@ -13,7 +13,6 @@
 
 @end
 
-@implementation FeedbackSurveyResultTableViewCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -37,15 +36,15 @@
         _bgView.layer.borderColor = [UIColor colorWithRed:0xe4 green:0xe7 blue:0xec alpha:1].CGColor;
         _bgView.layer.borderWidth = 1;
         [self.contentView addSubview:_bgView];
-        
+
         _iconImg = [[UIImageView alloc] initWithFrame:CGRectMake(20, (CGRectGetHeight(_bgView.frame)-30)/2, 30, 30)];
         _iconImg.image = [UIImage imageNamed:@"feedback_very_satisfied_icon"];
         [_bgView addSubview:_iconImg];
-        
+
         _progressView = [[UIProgressView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_iconImg.frame)+20, (CGRectGetHeight(_bgView.frame)-3)/2, CGRectGetWidth(_bgView.frame)-20-CGRectGetWidth(_iconImg.frame)-20-20, 3)];
         [_bgView addSubview:_progressView];
         _progressView.progress = 0.5;
-       
+
         _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(_progressView.frame.origin.x, CGRectGetMinY(_progressView.frame)-25, CGRectGetWidth(_progressView.frame), 25)];
         _titleLabel.textAlignment = 0;
         _titleLabel.font = [UIFont systemFontOfSize:16];
@@ -53,7 +52,7 @@
         _titleLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
 //        _titleLabel.text = @"Very Satisfied";
         [_bgView addSubview:_titleLabel];
-        
+
         _percentLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_progressView.frame)-100, CGRectGetMinY(_progressView.frame)-25, 100, 25)];
         _percentLabel.textAlignment = 2;
         _percentLabel.font = [UIFont systemFontOfSize:16];
@@ -61,7 +60,7 @@
         _percentLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
 //        _percentLabel.text = @"0%";
         [_bgView addSubview:_percentLabel];
-        
+
         _responseLabel = [[UILabel alloc] initWithFrame:CGRectMake(_progressView.frame.origin.x, CGRectGetMaxY(_progressView.frame), CGRectGetWidth(_progressView.frame), 25)];
         _responseLabel.textAlignment = 0;
         _responseLabel.font = [UIFont systemFontOfSize:14];
