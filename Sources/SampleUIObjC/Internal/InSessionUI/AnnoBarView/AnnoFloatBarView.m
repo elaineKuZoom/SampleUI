@@ -89,23 +89,23 @@
 - (void)hideActionView {
     self.backgroundColor = [UIColor clearColor];
     [self.switchBtn setSelected:NO];
-    
+
     for (UIButton *itemBtn in self.itemArray) {
         [itemBtn removeFromSuperview];
     }
-    
+
     [self.itemArray removeAllObjects];
 }
 
 - (void)showActionView {
-    
+
     self.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.4];
-    
+
     self.itemArray = [NSMutableArray array];
     [self.switchBtn setSelected:YES];
-    
+
     CGSize iconSize = IS_IPAD?CGSizeMake(51, 49):CGSizeMake(51, 45);
-    
+
     UIImage *image = [UIImage imageNamed:@"icon_mainicon_normal"];
     UIButton *penButton = [UIButton buttonWithType:UIButtonTypeCustom];
     penButton.frame = CGRectMake(image.size.width + 5, 5, iconSize.width, iconSize.height);
@@ -117,7 +117,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:penButton];
     [self addSubview:penButton];
     [self.itemArray addObject:penButton];
-    
+
     UIButton *highlightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     highlightButton.frame = penButton.frame;
     highlightButton.frame = CGRectOffset(penButton.frame, iconSize.width, 0);
@@ -129,7 +129,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:highlightButton];
     [self addSubview:highlightButton];
     [self.itemArray addObject:highlightButton];
-    
+
     UIButton *sportlightButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [sportlightButton setImage:[UIImage imageNamed:@"anno_icon_spotlight"] forState:UIControlStateNormal];
     [sportlightButton setImage:[UIImage imageNamed:@"anno_icon_spotlight_selected"] forState:UIControlStateSelected];
@@ -141,12 +141,12 @@
     [self layoutSubViewsInCenter:0.0 byParentView:sportlightButton];
     [self addSubview:sportlightButton];
     [self.itemArray addObject:sportlightButton];
-    
+
     UIColor *toolColor = [self.annoHelper getToolColor];
     UIImage *back = [self imageWithColor:[UIColor clearColor] size:CGSizeMake(20, 20) andRoundSize:0];
     UIImage *top = [self imageWithColor:toolColor size:CGSizeMake(20, 20) andRoundSize:10];
     UIImage *colorBtnImage = [self mergeTwoImages:top bottomImage:back];
-    
+
     UIButton *colorButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [colorButton setImage:colorBtnImage forState:UIControlStateNormal];
     [colorButton setImage:colorBtnImage forState:UIControlStateSelected];
@@ -159,7 +159,7 @@
     [self addSubview:colorButton];
     [self.itemArray addObject:colorButton];
     self.colorButton = colorButton;
-    
+
     UIButton *changeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [changeButton setImage:[UIImage imageNamed:@"anno_icon_arrow"] forState:UIControlStateNormal];
     [changeButton setImage:[UIImage imageNamed:@"anno_icon_arrow_selected"] forState:UIControlStateSelected];
@@ -171,7 +171,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:changeButton];
     [self addSubview:changeButton];
     [self.itemArray addObject:changeButton];
-    
+
     UIButton *widthButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [widthButton setImage:[UIImage imageNamed:@"anno_icon_spotlight"] forState:UIControlStateNormal];
     [widthButton setImage:[UIImage imageNamed:@"anno_icon_spotlight_selected"] forState:UIControlStateSelected];
@@ -183,7 +183,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:widthButton];
     [self addSubview:widthButton];
     [self.itemArray addObject:widthButton];
-    
+
     UIButton *destroyButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [destroyButton setImage:[UIImage imageNamed:@"anno_font_italic_normal"] forState:UIControlStateNormal];
     [destroyButton setImage:[UIImage imageNamed:@"anno_font_italic_normal"] forState:UIControlStateSelected];
@@ -195,7 +195,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:destroyButton];
     [self addSubview:destroyButton];
     [self.itemArray addObject:destroyButton];
-    
+
     UIButton *undoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [undoButton setImage:[UIImage imageNamed:@"anno_icon_undo"] forState:UIControlStateNormal];
     [undoButton setImage:[UIImage imageNamed:@"anno_icon_undo_selected"] forState:UIControlStateSelected];
@@ -207,7 +207,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:undoButton];
     [self addSubview:undoButton];
     [self.itemArray addObject:undoButton];
-    
+
     UIButton *redoButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [redoButton setImage:[UIImage imageNamed:@"anno_icon_redo"] forState:UIControlStateNormal];
     [redoButton setImage:[UIImage imageNamed:@"anno_icon_redo_selected"] forState:UIControlStateSelected];
@@ -219,7 +219,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:redoButton];
     [self addSubview:redoButton];
     [self.itemArray addObject:redoButton];
-    
+
     UIButton *cleanButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [cleanButton setImage:[UIImage imageNamed:@"anno_icon_clear"] forState:UIControlStateNormal];
     [cleanButton setImage:[UIImage imageNamed:@"anno_icon_clear_selected"] forState:UIControlStateSelected];
@@ -231,7 +231,7 @@
     [self layoutSubViewsInCenter:0.0 byParentView:cleanButton];
     [self addSubview:cleanButton];
     [self.itemArray addObject:cleanButton];
-    
+
     UIButton *eraseButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [eraseButton setImage:[UIImage imageNamed:@"anno_icon_erase"] forState:UIControlStateNormal];
     [eraseButton setImage:[UIImage imageNamed:@"anno_icon_erase_selected"] forState:UIControlStateSelected];
@@ -252,12 +252,12 @@
         _oldPoint = [gestureRecognizer locationInView: gestureRecognizer.view];
         return;
     }
-    
+
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded)
     {
         return;
     }
-    
+
     [self locateUI:[gestureRecognizer locationInView: gestureRecognizer.view]];
 }
 
@@ -265,9 +265,9 @@
 {
     CGFloat dx = newPoint.x - _oldPoint.x;
     CGFloat dy = newPoint.y - _oldPoint.y;
-    
+
     CGPoint newCenter = CGPointMake(self.center.x+dx, self.center.y+dy);
-    
+
     self.center = newCenter;
     [self setNeedsLayout];
 }
@@ -319,11 +319,11 @@
 - (void)onColorButtonClicked:(id)sendor {
     NSArray *colorAccessArray = @[@"Black", @"Red", @"Yellow", @"Green", @"Blue"];
     NSArray *colorArr = @[@(0x333333), @(0x1919FF), @(0x32DEFF), @(0x86C782), @(0xFF8C2E)];
-    
+
     int i = arc4random_uniform(5);
     UIColor *color = [UIColor colorWithRed:ZMRed([colorArr[i] integerValue])/256.0 green:ZMGreen([colorArr[i] integerValue])/256.0 blue:ZMBlue([colorArr[i] integerValue])/256.0 alpha:1.0];
     [self.annoHelper setToolColor:color];
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIImage *back = [self imageWithColor:[UIColor clearColor] size:CGSizeMake(20, 20) andRoundSize:0];
         UIImage *top = [self imageWithColor:color size:CGSizeMake(20, 20) andRoundSize:10];
@@ -361,7 +361,6 @@
 
 - (void)onCleanButtonClicked:(id)sender {
     if (!self.annoHelper) return;
-    [self showCleanTestMenu:sender];
 }
 
 - (void)onUndoButtonClicked:(id)sender {
@@ -374,58 +373,18 @@
     [self.annoHelper redo];
 }
 
-- (void)showCleanTestMenu:(id)sender
-{
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Clear"
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
-
-    BOOL disalbed = [self.annoHelper canDoAnnotation];
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"canDoAnnotation:%@", @(disalbed)]
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:nil]];
-    
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Clear my"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-        [self.annoHelper clear:ZoomVideoSDKAnnotationClearType_My];
-                                                      }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Clear all"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-        [self.annoHelper clear:ZoomVideoSDKAnnotationClearType_All];
-                                                      }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Clear others"
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action){
-        [self.annoHelper clear:ZoomVideoSDKAnnotationClearType_Others];
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
-    UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-    if (popover)
-    {
-        UIButton *btn = (UIButton*)sender;
-        popover.sourceView = btn;
-        popover.sourceRect = btn.bounds;
-        popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-    }
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-}
-
 - (void)layoutSubViewsInCenter:(CGFloat)space byParentView:(UIButton *)button
 {
     // get the size of the elements here for readability
     CGSize imageSize = button.imageView.frame.size;
     CGSize titleSize = button.titleLabel.intrinsicContentSize;
-    
+
     // lower the text and push it left to center it
     button.titleEdgeInsets = UIEdgeInsetsMake(0.0, -imageSize.width, -(imageSize.height + space), 0.0);
-    
+
     // raise the image and push it right to center it
     button.imageEdgeInsets = UIEdgeInsetsMake(-(titleSize.height + space), 0.0, 0.0, -titleSize.width);
-    
+
     // center image
     CGPoint center = button.imageView.center;
     center.x = button.frame.size.width / 2;
@@ -435,7 +394,7 @@
 - (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size andRoundSize:(CGFloat)roundSize {
     if (!color)
         return nil;
-    
+
     size = CGSizeMake(floor(size.width), floor(size.height));
     CGRect rect = CGRectMake(0.0f, 0.0f, size.width, size.height);
 #if TARGET_OS_VISION
@@ -444,7 +403,7 @@
     UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
 #endif
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
+
     if (roundSize > 0) {
         UIBezierPath* roundedRectanglePath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius: roundSize];
         [color setFill];
@@ -452,12 +411,12 @@
     } else {
         CGContextSetFillColorWithColor(context, [color CGColor]);
         CGContextFillRect(context, rect);
-        
+
     }
-    
+
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     return image;
 }
 
@@ -469,7 +428,7 @@
     int theight = topImage.size.height;
     int xoffset = (bwidth - twidth) / 2;
     int yoffset = (bheight - theight) / 2;
-    
+
     CGSize size = CGSizeMake(bwidth, bheight);
 #if TARGET_OS_VISION
     UIGraphicsBeginImageContextWithOptions(size, NO, 2.0);
@@ -480,7 +439,7 @@
     [topImage drawInRect:CGRectMake(xoffset,yoffset,twidth,theight) blendMode:kCGBlendModeMultiply alpha:1.0];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
+
     return newImage;
 }
 @end
