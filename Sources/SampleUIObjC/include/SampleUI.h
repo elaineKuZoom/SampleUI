@@ -11,6 +11,9 @@
 #define SCREEN_HEIGHT [[UIScreen mainScreen] bounds].size.height
 
 // Device type detection
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+
 #define IPHONE_X ({\
     BOOL isPhoneX = NO;\
     if (@available(iOS 11.0, *)) {\
