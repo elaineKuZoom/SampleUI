@@ -11,6 +11,7 @@
 #import "Canvas/CanvasViewController.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "Vender/KGModal/KGModal.h"
+#import "Vender/MBProgressHUD/MBProgressHUD.h"
 #import "PreSessionUI/RendererSelectView.h"
 
 typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
