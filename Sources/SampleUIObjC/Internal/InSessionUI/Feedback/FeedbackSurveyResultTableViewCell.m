@@ -13,6 +13,7 @@
 
 @end
 
+@implementation FeedbackSurveyResultTableViewCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
