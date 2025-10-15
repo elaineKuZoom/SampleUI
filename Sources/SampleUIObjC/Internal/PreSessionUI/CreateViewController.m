@@ -7,6 +7,7 @@
 //
 
 #import "SampleUI.h"
+#import "SampleUIBootstrap.h"
 #import "CreateViewController.h"
 #import "Canvas/CanvasViewController.h"
 #import <CommonCrypto/CommonDigest.h>

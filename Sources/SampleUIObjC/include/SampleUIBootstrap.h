@@ -9,6 +9,12 @@ NS_ASSUME_NONNULL_BEGIN
                  appGroupId:(nullable NSString *)appGroupId
                   enableLog:(BOOL)enableLog;
 
+/// Set the default app token (optional, for streaming join fallback).
++ (void)setDefaultAppToken:(nullable NSString *)token;
+
+/// Get the default app token.
++ (nullable NSString *)defaultAppToken;
+
 /// Create the root UI your sample shows (Intro inside BaseNavigationController).
 + (UIViewController *)makeRootViewController;
 
