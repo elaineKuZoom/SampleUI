@@ -7,10 +7,10 @@
 //
 
 #import "LeftViewController.h"
-#import "LeftViewCell.h"
-#import "UIViewController+LGSideMenuController.h"
-#import "MainViewController.h"
-#import "LowerThirdSettingViewController.h"
+#import "PreSessionUI/LeftViewCell.h"
+#import "Vendor/LGSideMenuController/UIViewController+LGSideMenuController.h"
+#import "PreSessionUI/MainViewController.h"
+#import "InSessionUI/LowerThird/LowerThirdSettingViewController.h"
 
 @interface LeftViewController ()
 
@@ -32,9 +32,9 @@
                              @"",
                              @"Init SDK",
                              @"CleanUp SDK",];
-        
+
         self.view.backgroundColor = [UIColor clearColor];
-        
+
         [self.tableView registerClass:[LeftViewCell class] forCellReuseIdentifier:@"cell"];
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 #if TARGET_OS_VISION
@@ -77,11 +77,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     LeftViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    
+
     cell.textLabel.text = self.titlesArray[indexPath.row];
     cell.separatorView.hidden = indexPath.row <= 1;
     cell.userInteractionEnabled = (indexPath.row != 0 && indexPath.row != 1);
-    
+
 #if TARGET_OS_VISION
     if (indexPath.row == 0) {
         cell.textLabel.font = [UIFont boldSystemFontOfSize:24.0];
@@ -95,7 +95,7 @@
         cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     }
 #endif
-    
+
     if (indexPath.row == 2) {
         cell.imageView.image = [UIImage imageNamed:@"settings_icon"];
     } else if (indexPath.row == 3) {
@@ -105,7 +105,7 @@
     } else {
         cell.imageView.image = nil;
     }
-    
+
     return cell;
 }
 
@@ -125,7 +125,7 @@
         MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
         [mainViewController hideLeftViewAnimated:YES completionHandler:nil];
         UINavigationController *navigationController = (UINavigationController *)mainViewController.rootViewController;
-        
+
         LowerThirdSettingViewController *vc = [[LowerThirdSettingViewController alloc] init];
         vc.isPushed = YES;
         [navigationController pushViewController:vc animated:YES];
@@ -133,7 +133,7 @@
     else if (indexPath.row == 3) {
         MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
         [mainViewController hideLeftViewAnimated:YES completionHandler:nil];
-        
+
         NSString *urlString = @"https://marketplace.zoom.us";
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:urlString]]) {
             NSDictionary *options = @{UIApplicationOpenURLOptionUniversalLinksOnly: @NO};
@@ -164,7 +164,7 @@
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
         textField.placeholder = @"please input domain";
     }];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"OK"]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
@@ -175,12 +175,12 @@
         } else {
             domain = tfText;
         }
-        
+
         [self initZoomSDK:domain];
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -223,12 +223,12 @@
 //    context.videoRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
 //    context.shareRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
 //    context.audioRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
-    
+
 //    NSString *speakerFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp3"];
 //    if (speakerFilePath.length != 0) {
 //        context.extendParam.speakerTestFilePath = speakerFilePath;
 //    }
-    
+
     ZoomVideoSDKError ret = [[ZoomVideoSDK shareInstance] initialize:context];
     NSLog(@"[ZoomVideoSDK] initialize =====>%@", ret == Errors_Success ? @"Success" : @(ret));
 }

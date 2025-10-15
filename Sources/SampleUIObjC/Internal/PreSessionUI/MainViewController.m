@@ -7,8 +7,8 @@
 //
 
 #import "MainViewController.h"
-#import "IntroViewController.h"
-#import "LeftViewController.h"
+#import "PreSessionUI/IntroViewController.h"
+#import "PreSessionUI/LeftViewController.h"
 
 @interface MainViewController ()
 
@@ -19,13 +19,13 @@
 @implementation MainViewController
 
 - (void)setupWithType {
-    
+
     self.leftViewController = [LeftViewController new];
-    
+
     self.leftViewWidth = self.view.bounds.size.width-100;
     self.leftViewBackgroundColor = [UIColor whiteColor];
 
-    
+
     UIColor *greenCoverColor = [UIColor colorWithRed:0.0 green:0.1 blue:0.0 alpha:0.3];
     UIBlurEffectStyle regularStyle;
 
@@ -35,14 +35,14 @@
     else {
         regularStyle = UIBlurEffectStyleLight;
     }
-    
+
     self.leftViewPresentationStyle = LGSideMenuPresentationStyleSlideAbove;
     self.rootViewCoverColorForLeftView = greenCoverColor;
 }
 
 - (void)leftViewWillLayoutSubviewsWithSize:(CGSize)size {
     [super leftViewWillLayoutSubviewsWithSize:size];
-    
+
     if (!self.isLeftViewStatusBarHidden) {
         self.leftView.frame = CGRectMake(0.0, 20.0, size.width, size.height-20.0);
     }
@@ -50,7 +50,7 @@
 
 - (void)rightViewWillLayoutSubviewsWithSize:(CGSize)size {
     [super rightViewWillLayoutSubviewsWithSize:size];
-    
+
 #if TARGET_OS_VISION
     // Vision Pro: UI_USER_INTERFACE_IDIOM not available, use default behavior
     if (!self.isRightViewStatusBarHidden) {
