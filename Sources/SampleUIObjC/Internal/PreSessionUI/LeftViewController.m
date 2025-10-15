@@ -156,7 +156,6 @@
 
 - (void)showInitAlert:(id)sender
 {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Init SDK"
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleAlert];
@@ -171,7 +170,7 @@
         NSString *domain = @"";
         NSString *tfText = alertController.textFields.firstObject.text;
         if (tfText.length <= 0 || !([tfText hasPrefix:@"http://"] || [tfText hasPrefix:@"https://"])) {
-            domain = kAppDomain;
+            domain = @"zoom.us";
         } else {
             domain = tfText;
         }
@@ -189,7 +188,7 @@
         popover.sourceRect = btn.bounds;
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 
@@ -217,7 +216,7 @@
      *
      * if you don't need screen share feature, appGroupId can fill an empty string, or delete the bottom line. And delete ZoomVideoSDKScreenShare target.
      */
-    context.appGroupId = kScreenShareBundleId; // please input group id from the Apple Developer Web site.
+    context.appGroupId = @"group.test.sdk"; // please input group id from the Apple Developer Web site.
     context.enableLog = YES;
 //    context.logFilePrefix = @"";
 //    context.videoRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
