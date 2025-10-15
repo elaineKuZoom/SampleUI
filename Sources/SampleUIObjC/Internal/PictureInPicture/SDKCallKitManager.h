@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CallKit/CallKit.h>
+@import ZoomVideoSDK;
 
 #define ENABLE_CALLKIT_VOIP_MEETING 0
 
