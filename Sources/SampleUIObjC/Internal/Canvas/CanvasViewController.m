@@ -889,7 +889,7 @@
 #pragma mark - ZoomVideoSDK delegate -
 - (void)onError:(ZoomVideoSDKError)ErrorType detail:(NSInteger)details
 {
-    NSLog(@"ErrorType========%@, %@",@(ErrorType), [self formatErrorString:ErrorType]);
+
     NSLog(@"ErrorDetails========%@",@(details));
 
     switch (ErrorType) {
@@ -911,20 +911,7 @@
             break;
     }
 
-    NSString *string = [self formatErrorString:ErrorType];
-    if (string) {
-        string = [string stringByAppendingFormat:@". Error code: %@", @(details)];
 
-        UIWindow *window = [UISceneOrientationHelper currentKeyWindow];
-        if (!window) {
-            window = [[UIApplication sharedApplication].windows lastObject];
-        }
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
-        hud.mode = MBProgressHUDModeText;
-        hud.label.text = string;
-        hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
-        [hud hideAnimated:YES afterDelay:4.f];
-    }
 }
 
 - (void)onSessionJoin {
