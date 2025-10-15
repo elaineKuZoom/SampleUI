@@ -561,7 +561,6 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 
 - (void)onError:(ZoomVideoSDKError)ErrorType detail:(NSInteger)details
 {
-    NSLog(@"ErrorType========%@, %@",@(ErrorType), [self formatErrorString:ErrorType]);
     NSLog(@"ErrorDetails========%@",@(details));
 }
 
