@@ -193,7 +193,7 @@
                     if (itemUser && [itemUser getRemoteCameraControlHelper]) {
                         ZoomVideoSDKError ret = [[itemUser getRemoteCameraControlHelper] requestControlRemoteCamera];
                         if (ret == Errors_Success) {
-                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
                             hud.mode = MBProgressHUDModeText;
                             hud.label.text = [NSString stringWithFormat:@"Request Control %@'s Camera", itemUser.getUserName];
                             hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
@@ -216,7 +216,7 @@
                         ZoomVideoSDKError ret = [[itemUser getRemoteCameraControlHelper] giveUpControlRemoteCamera];
                         if (ret == Errors_Success) {
                             _isCameraControl = NO;
-                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self animated:YES];
                             hud.mode = MBProgressHUDModeText;
                             hud.label.text = [NSString stringWithFormat:@"Stopped Camera Control"];
                             hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
@@ -256,7 +256,16 @@
         popover.sourceRect = btn.bounds;
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
-    [self presentViewController:alertController animated:YES completion:nil];
+
+    // Find the parent view controller from responder chain
+    UIResponder *responder = self;
+    while (responder) {
+        if ([responder isKindOfClass:[UIViewController class]]) {
+            [(UIViewController *)responder presentViewController:alertController animated:YES completion:nil];
+            break;
+        }
+        responder = [responder nextResponder];
+    }
 
 }
 
