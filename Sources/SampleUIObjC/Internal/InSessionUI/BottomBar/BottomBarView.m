@@ -9,6 +9,7 @@
 #import "SampleUI.h"
 #import "BottomBarView.h"
 #import "InSessionUI/BottomBar/HorizontalTableView.h"
+#import "Vender/MBProgressHUD/MBProgressHUD.h"
 #import "InSessionUI/Chat/ChatInputView.h"
 
 @implementation ViewItem
