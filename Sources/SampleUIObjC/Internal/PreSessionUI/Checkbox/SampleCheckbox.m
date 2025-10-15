@@ -1,3 +1,4 @@
+#import "SampleUI.h"
 #import "SampleCheckbox.h"
 
 static const float CTCheckboxDefaultSideLength = 20.0;

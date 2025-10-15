@@ -6,6 +6,7 @@
 //  Copyright © 2023 Zoom. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import "CameraControlView.h"
 
 #define kUpTag        1001

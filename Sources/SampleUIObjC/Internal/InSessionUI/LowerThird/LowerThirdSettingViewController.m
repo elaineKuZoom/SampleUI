@@ -6,6 +6,7 @@
 //  Copyright © 2021 Zoom. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import "LowerThirdSettingViewController.h"
 #import "InSessionUI/Storage/SimulateStorage.h"
 #import "LowerThirdPanel.h"

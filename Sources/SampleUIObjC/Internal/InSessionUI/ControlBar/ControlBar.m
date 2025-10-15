@@ -6,6 +6,7 @@
 //  Copyright © 2019 Zoom. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import "ControlBar.h"
 #import "InSessionUI/TopBar/TopBarView.h"
 #import <AudioToolbox/AudioToolbox.h>

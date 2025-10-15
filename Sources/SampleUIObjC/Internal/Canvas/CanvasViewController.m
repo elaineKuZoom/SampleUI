@@ -6,6 +6,7 @@
 //  Copyright © 2019 Zoom. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import <ReplayKit/ReplayKit.h>
 #import "CanvasViewController.h"
 #import "UISceneOrientationHelper.h"

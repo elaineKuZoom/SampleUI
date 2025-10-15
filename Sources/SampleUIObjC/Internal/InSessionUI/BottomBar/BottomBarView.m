@@ -6,6 +6,7 @@
 //  Copyright © 2019 Zoom. All rights reserved.
 //
 
+#import "SampleUI.h"
 #import "BottomBarView.h"
 #import "InSessionUI/BottomBar/HorizontalTableView.h"
 #import "InSessionUI/Chat/ChatInputView.h"

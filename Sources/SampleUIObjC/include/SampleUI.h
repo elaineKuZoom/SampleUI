@@ -35,6 +35,14 @@
 // Status bar orientation helper
 #define GET_STATUS_BAR_ORIENTATION() [UISceneOrientationHelper currentInterfaceOrientation]
 
+// Geometry helper macros
+#define MaxY(view)   CGRectGetMaxY(view.frame)
+#define MaxX(view)   CGRectGetMaxX(view.frame)
+#define MinY(view)   CGRectGetMinY(view.frame)
+#define MinX(view)   CGRectGetMinX(view.frame)
+#define Width(view)  CGRectGetWidth(view.frame)
+#define Height(view) CGRectGetHeight(view.frame)
+
 FOUNDATION_EXPORT double SampleUIVersionNumber;
 FOUNDATION_EXPORT const unsigned char SampleUIVersionString[];
 
