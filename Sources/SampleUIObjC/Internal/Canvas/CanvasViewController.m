@@ -26,6 +26,7 @@
 #import "InSessionUI/CameraControl/CameraControlView.h"
 #import "Canvas/DemoTestSubsessionView.h"
 #import "InSessionUI/AnnoBarView/DrawingView.h"
+#import "Vender/MBProgressHUD/MBProgressHUD.h"
 //#import "SharePreprocessHelper.h"
 
 #import <Photos/Photos.h>
