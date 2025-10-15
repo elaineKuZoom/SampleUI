@@ -353,24 +353,6 @@
         };
         _controlBarView.controlBarClickBlock = ^(NSInteger type) {
             if (type == kTagButtonShare) {
-                if ([[[ZoomVideoSDK shareInstance] getShareHelper] isShareLocked]) {
-                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:weakSelf.view animated:YES];
-                    hud.mode = MBProgressHUDModeText;
-                    hud.label.text = @"Share is locked by admin";
-                    // Move to bottm center.
-                    hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
-                    [hud hideAnimated:YES afterDelay:2.f];
-                    return;
-                }
-                if ([[[ZoomVideoSDK shareInstance] getShareHelper] isOtherSharing]) {
-                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:weakSelf.view animated:YES];
-                    hud.mode = MBProgressHUDModeText;
-                    hud.label.text = @"Some one is alerady sharing";
-                    // Move to bottm center.
-                    hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
-                    [hud hideAnimated:YES afterDelay:2.f];
-                    return;
-                }
                 [weakSelf showShareOptionView];
             }
             else if (type == kTagButtonSubsession) {

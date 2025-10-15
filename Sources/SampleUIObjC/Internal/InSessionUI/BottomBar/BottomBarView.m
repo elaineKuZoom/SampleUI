@@ -179,7 +179,6 @@
 
 - (void)onVideoMoreClicked:(UIButton *)sender
 {
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
@@ -193,7 +192,7 @@
                     if (itemUser && [itemUser getRemoteCameraControlHelper]) {
                         ZoomVideoSDKError ret = [[itemUser getRemoteCameraControlHelper] requestControlRemoteCamera];
                         if (ret == Errors_Success) {
-                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[appDelegate topViewController].view animated:YES];
+                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                             hud.mode = MBProgressHUDModeText;
                             hud.label.text = [NSString stringWithFormat:@"Request Control %@'s Camera", itemUser.getUserName];
                             hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
@@ -216,7 +215,7 @@
                         ZoomVideoSDKError ret = [[itemUser getRemoteCameraControlHelper] giveUpControlRemoteCamera];
                         if (ret == Errors_Success) {
                             _isCameraControl = NO;
-                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[appDelegate topViewController].view animated:YES];
+                            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
                             hud.mode = MBProgressHUDModeText;
                             hud.label.text = [NSString stringWithFormat:@"Stopped Camera Control"];
                             hud.offset = CGPointMake(0.f, MBProgressMaxOffset);
@@ -256,7 +255,7 @@
         popover.sourceRect = btn.bounds;
         popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
     }
-    [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
+    [self presentViewController:alertController animated:YES completion:nil];
 
 }
 
