@@ -6,7 +6,7 @@ let package = Package(
   name: "SampleUI",
   defaultLocalization: "en",
   platforms: [.iOS(.v13)],
-  products: [.library(name: "SampleUI", targets: ["SampleUIObjC"])],
+  products: [.library(name: "SampleUI", targets: ["SampleUI"])],
   targets: [
     .binaryTarget(
       name: "ZoomVideoSDK",
@@ -26,11 +26,16 @@ let package = Package(
       ],
       path: "Sources/SampleUIObjC",
       publicHeadersPath: "include",
-      resources: [.process("Resources")],
       cSettings: [
         .headerSearchPath("Internal"),
         .define("SWIFT_PACKAGE")
       ]
+    ),
+    .target(
+      name: "SampleUI",
+      dependencies: ["SampleUIObjC"],
+      path: "Sources/SampleUI",
+      resources: [.process("Resources")]
     )
   ]
 )
