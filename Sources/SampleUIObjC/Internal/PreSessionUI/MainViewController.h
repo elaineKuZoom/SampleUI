@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Vendor/LGSideMenuController/LGSideMenuController.h"
+#import "Vender/LGSideMenuController/LGSideMenuController.h"
 
 @interface MainViewController : LGSideMenuController
 

@@ -8,7 +8,7 @@
 
 #import "LeftViewController.h"
 #import "PreSessionUI/LeftViewCell.h"
-#import "Vendor/LGSideMenuController/UIViewController+LGSideMenuController.h"
+#import "Vender/LGSideMenuController/UIViewController+LGSideMenuController.h"
 #import "PreSessionUI/MainViewController.h"
 #import "InSessionUI/LowerThird/LowerThirdSettingViewController.h"
 
