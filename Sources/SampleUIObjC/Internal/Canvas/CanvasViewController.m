@@ -23,7 +23,7 @@
 #import "PictureInPicture/SDKCallKitManager.h"
 #import "PictureInPicture/SDKPiPHelper.h"
 #import "InSessionUI/CameraControl/CameraControlView.h"
-#import "Canvas/CanvasDemoTestSubsessionView.h"
+#import "Canvas/DemoTestSubsessionView.h"
 #import "InSessionUI/AnnoBarView/DrawingView.h"
 //#import "SharePreprocessHelper.h"
 
