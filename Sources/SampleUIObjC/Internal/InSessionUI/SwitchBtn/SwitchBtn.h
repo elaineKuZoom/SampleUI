@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@import ZoomVideoSDK;
 
 @interface SwitchBtn : UIButton
 @property (nonatomic, strong, nullable) ZoomVideoSDKUser *sharedUser;
