@@ -12,8 +12,7 @@ import SampleUIObjC
 
 public enum SampleUIEntry {
   public static func makeRootViewController() -> UIViewController {
-    let intro = IntroduceViewController()        // from Obj-C target
-    return BaseNavigationController(rootViewController: intro)
+    return SampleUIBootstrap.makeRootViewController()
   }
   public static var bundle: Bundle { .module }   // use for storyboards/images if needed
 }
