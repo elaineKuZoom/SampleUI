@@ -7,12 +7,12 @@
 //
 
 #import "MoreMenuViewController.h"
-#import "MoreMenuItemCell.h"
-#import "SimulateStorage.h"
-#import "FeedbackSurveyResultViewController.h"
-#import "FeedbackPopViewController.h"
-#import "MoreMenuHelper.h"
-#import "LowerThirdSettingViewController.h"
+#import "InSessionUI/More/MoreMenuItemCell.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
+#import "InSessionUI/Feedback/FeedbackSurveyResultViewController.h"
+#import "InSessionUI/Feedback/FeedbackPopViewController.h"
+#import "InSessionUI/More/MoreMenuHelper.h"
+#import "InSessionUI/LowerThird/LowerThirdSettingViewController.h"
 
 @interface MoreMenuViewController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong)   UITableView             *tableView;
@@ -39,12 +39,12 @@
     [self.view addSubview:tapView];
     UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
     [tapView addGestureRecognizer:singleTap];
-    
+
     UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(20, SCREEN_HEIGHT-(MenuItem_Height*7+80)-80, MenuItem_WIDTH, MenuItem_Height*7+80)];
     itemView.backgroundColor = [UIColor whiteColor];
     itemView.layer.cornerRadius = 15;
     [self.view addSubview:itemView];
-    
+
     // *********title**********
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(itemView.frame), MenuItem_Height)];
     headerView.backgroundColor = [UIColor whiteColor];
@@ -57,7 +57,7 @@
     titleLabel.textColor = RGBCOLOR(0x23, 0x23, 0x23);
     titleLabel.text = @"More";
     [headerView addSubview:titleLabel];
-    
+
     // *********menu table**********
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(headerView.frame), CGRectGetWidth(itemView.frame), MenuItem_Height*6) style:UITableViewStylePlain];
     self.tableView.dataSource = self;
@@ -69,7 +69,7 @@
     self.tableView.backgroundColor = [UIColor whiteColor];
     [itemView addSubview:self.tableView];
     self.tableView.userInteractionEnabled = YES;
-    
+
     // *********reaction view**********
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableView.frame), CGRectGetWidth(itemView.frame), MenuItem_Height+30)];
     footerView.layer.cornerRadius = 15;
@@ -134,7 +134,7 @@
         }
     }
     [self.dataSource addObject:itemMute];
-    
+
     MoreMenuItem * itemSpeaker = [[MoreMenuItem alloc] init];
     itemSpeaker.type = kTagMoreMenuTpye_TurnOnoffSpeaker;
     if ([MoreMenuHelper sharedInstance].isSpeaker) {
@@ -144,27 +144,27 @@
        itemSpeaker.title = @"Turn on Speaker";
        itemSpeaker.icon = @"more_speaker_off_icon";
     }
-    
+
     [self.dataSource addObject:itemSpeaker];
-    
+
     MoreMenuItem * item3 = [[MoreMenuItem alloc] init];
     item3.type = kTagMoreMenuTpye_SwitchCamera;
     item3.title = @"Switch Camera";
     item3.icon = @"more_switch_camera_icon";
     [self.dataSource addObject:item3];
-    
+
     MoreMenuItem * itemLowerThird = [[MoreMenuItem alloc] init];
     itemLowerThird.type = kTagMoreMenuTpye_LowerThird;
     itemLowerThird.title = @"Lower Third";
     itemLowerThird.icon = @"more_lower_third_icon";
     [self.dataSource addObject:itemLowerThird];
-    
+
     MoreMenuItem * itemPoll = [[MoreMenuItem alloc] init];
     itemPoll.type = kTagMoreMenuTpye_Feedback;
     itemPoll.title = @"Feedback";
     itemPoll.icon = @"more_feedback_icon";
     [self.dataSource addObject:itemPoll];
-    
+
     MoreMenuItem * itemHand = [[MoreMenuItem alloc] init];
     if ([SimulateStorage shareInstance].isRaiseHand == YES) {
         itemHand.type = kTagMoreMenuTpye_RaiseLowerHand;
@@ -216,7 +216,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     MoreMenuItem *item = [self.dataSource objectAtIndex:indexPath.row];
     MoreMenuItemCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (item.type == kTagMoreMenuTpye_RaiseLowerHand) {
@@ -226,7 +226,7 @@
             item.type = kTagMoreMenuTpye_RaiseLowerHand;
             item.title = @"Raise Hand";
             item.icon = @"more_lowerhand_icon";
-            
+
             // simulator my self reaction.
             [[NSNotificationCenter defaultCenter] postNotificationName:Notification_mySelfReactionAction object:@(kTagReactionTpye_Lowerhand)];
         } else {
@@ -235,7 +235,7 @@
             item.type = kTagMoreMenuTpye_RaiseLowerHand;
             item.title = @"Lower Hand";
             item.icon = @"more_raisehand_icon";
-            
+
             // simulator my self reaction.
             [[NSNotificationCenter defaultCenter] postNotificationName:Notification_mySelfReactionAction object:@(kTagReactionTpye_Raisehand)];
         }
@@ -268,7 +268,7 @@
         [self dismissViewControllerAnimated:NO completion:nil];
         if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost]) {
             [[SimulateStorage shareInstance] initFeedbackItem];
-            
+
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
                 FeedbackSurveyResultViewController * vc = [[FeedbackSurveyResultViewController alloc] init];

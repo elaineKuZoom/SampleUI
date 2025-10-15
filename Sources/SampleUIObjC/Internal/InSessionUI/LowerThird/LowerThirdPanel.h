@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SimulateStorage.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

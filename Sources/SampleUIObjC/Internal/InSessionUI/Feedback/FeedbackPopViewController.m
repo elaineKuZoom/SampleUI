@@ -7,8 +7,8 @@
 //
 
 #import "FeedbackPopViewController.h"
-#import "SimulateStorage.h"
-#import "MoreMenuViewController.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
+#import "InSessionUI/More/MoreMenuViewController.h"
 
 @interface FeedbackPopViewController ()
 @property (nonatomic, strong) UIButton *closeBtn;
@@ -31,12 +31,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self initBeforeSubmitUI];
-        
+
         [self initAfterSubmitUI];
-        
+
         [self showUIType:_type];
     });
 }
@@ -46,13 +46,13 @@
         case FeedbackPopViewTpye_Push:
             _submitBeforeBgView.hidden = NO;
             _submitAftergView.hidden = YES;
-            
+
             _closeBtn.hidden = YES;
             _shadowView.backgroundColor = RGBCOLOR_With_Alpha(0x52, 0x52, 0x80, 0.09);
             _descLabel.hidden = NO;
             _pushBtnView.hidden = NO;
             _receiveBtnView.hidden = YES;
-            
+
             for (UIButton *btn in _feedbackBtnArray) {
                 [btn setEnabled:NO];
             }
@@ -60,17 +60,17 @@
         case FeedbackPopViewTpye_Receive:
             _submitBeforeBgView.hidden = NO;
             _submitAftergView.hidden = YES;
-            
+
             _closeBtn.hidden = NO;
             _shadowView.backgroundColor = [UIColor clearColor];
             _descLabel.hidden = YES;
             _pushBtnView.hidden = YES;
             _receiveBtnView.hidden = NO;
-            
+
             for (UIButton *btn in _feedbackBtnArray) {
                 [btn setEnabled:YES];
             }
-          
+
             break;
         case FeedbackPopViewTpye_AfterSubmit:
             _submitBeforeBgView.hidden = YES;
@@ -86,11 +86,11 @@
     _submitAftergView.backgroundColor = [UIColor whiteColor];
     _submitAftergView.layer.cornerRadius = 15;
     [self.view addSubview:_submitAftergView];
-    
+
     UIImageView * doneImg = [[UIImageView alloc] initWithFrame:CGRectMake((CGRectGetWidth(_submitAftergView.frame)-35)/2, 40, 35, 35)];
     doneImg.image = [UIImage imageNamed:@"feedback_done"];
     [_submitAftergView addSubview:doneImg];
-    
+
     UILabel *thankLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(doneImg.frame)+30, CGRectGetWidth(_submitAftergView.frame), 40)];
     thankLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
     thankLabel.text = @"Thank you for your feedback";
@@ -98,7 +98,7 @@
     thankLabel.textAlignment = 1;
     thankLabel.numberOfLines = 0;
     [_submitAftergView addSubview:thankLabel];
-    
+
     UIButton *doneBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, CGRectGetHeight(_submitAftergView.frame)-45-30, CGRectGetWidth(_shadowView.frame), 45)];
     [doneBtn setBackgroundColor:RGBCOLOR(0x0E, 0x71, 0xEB)];
     [doneBtn setTitle:@"Done" forState:UIControlStateNormal];
@@ -115,17 +115,17 @@
     _submitBeforeBgView.backgroundColor = [UIColor whiteColor];
     _submitBeforeBgView.layer.cornerRadius = 15;
     [self.view addSubview:_submitBeforeBgView];
-    
+
     _shadowView = [[UIView alloc] initWithFrame:CGRectMake(15, 15, MenuItem_WIDTH-30, 160)];
     _shadowView.backgroundColor = RGBCOLOR_With_Alpha(0x52, 0x52, 0x80, 0.09);
     _shadowView.layer.cornerRadius = 10;
     [_submitBeforeBgView addSubview:_shadowView];
-    
+
     _closeBtn = [[UIButton alloc] initWithFrame:CGRectMake(MenuItem_WIDTH-15-25, 15, 25, 25)];
     [_closeBtn setBackgroundImage:[UIImage imageNamed:@"feedback_close_icon"] forState:0];
     [_closeBtn addTarget:self action:@selector(onCloseClicked:) forControlEvents:UIControlEventTouchUpInside];
     [_submitBeforeBgView addSubview:_closeBtn];
-    
+
     UILabel *FeedbBacktitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_shadowView.frame), 80)];
     FeedbBacktitleLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
     FeedbBacktitleLabel.text = @"How would you rate this\nsession?";
@@ -174,7 +174,7 @@
         [feedbackView addSubview:feedbackBtn];
         [_feedbackBtnArray addObject:feedbackBtn];
     }
-    
+
     _descLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(_shadowView.frame), CGRectGetWidth(_shadowView.frame), 40)];
     _descLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
     _descLabel.text = @"Push this survey to all participants";
@@ -182,12 +182,12 @@
     _descLabel.textAlignment = 1;
     _descLabel.numberOfLines = 0;
     [_submitBeforeBgView addSubview:_descLabel];
-    
+
     _pushBtnView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_descLabel.frame), CGRectGetWidth(_shadowView.frame), 45)];
     [_submitBeforeBgView addSubview:_pushBtnView];
-    
+
     float btn_width = (CGRectGetWidth(_pushBtnView.frame)-20)/2;
-    
+
     UIButton *cancelBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 0, btn_width, 45)];
     [cancelBtn setBackgroundColor:RGBCOLOR(0xF1, 0xF4, 0xF6)];
     [cancelBtn setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -197,7 +197,7 @@
     cancelBtn.layer.cornerRadius = 10;
     cancelBtn.clipsToBounds = YES;
     [_pushBtnView addSubview:cancelBtn];
-    
+
     UIButton *pushBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(cancelBtn.frame)+20, 0, btn_width, 45)];
     [pushBtn setBackgroundColor:RGBCOLOR(0x0E, 0x71, 0xEB)];
     [pushBtn setTitle:@"Push" forState:UIControlStateNormal];
@@ -207,10 +207,10 @@
     pushBtn.layer.cornerRadius = 10;
     pushBtn.clipsToBounds = YES;
     [_pushBtnView addSubview:pushBtn];
-    
+
     _receiveBtnView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(_descLabel.frame), CGRectGetWidth(_shadowView.frame), 45)];
     [_submitBeforeBgView addSubview:_receiveBtnView];
-    
+
     _submitBtn = [[UIButton alloc] initWithFrame:CGRectMake(20, 0, CGRectGetWidth(_shadowView.frame), 45)];
     [_submitBtn setBackgroundImage:[self imageWithColor:RGBCOLOR(0x0E, 0x71, 0xEB)] forState:UIControlStateNormal];
     [_submitBtn setBackgroundImage:[self imageWithColor:RGBCOLOR(0xF1, 0xF4, 0xF6)] forState:UIControlStateDisabled];

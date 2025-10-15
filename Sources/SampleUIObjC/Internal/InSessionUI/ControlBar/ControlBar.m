@@ -7,10 +7,10 @@
 //
 
 #import "ControlBar.h"
-#import "TopBarView.h"
+#import "InSessionUI/TopBar/TopBarView.h"
 #import <AudioToolbox/AudioToolbox.h>
-#import "MoreMenuViewController.h"
-#import "KGModal.h"
+#import "InSessionUI/More/MoreMenuViewController.h"
+#import "Vendor/KGModal/KGModal.h"
 
 #define COMPARE(FIRST,SECOND) (CFStringCompare(FIRST, SECOND, kCFCompareCaseInsensitive) == kCFCompareEqualTo)
 
@@ -38,7 +38,7 @@
 
     UIInterfaceOrientation orientation = GET_STATUS_BAR_ORIENTATION();
     BOOL landscape = UIInterfaceOrientationIsLandscape(orientation);
-    
+
     float button_width;
     if (landscape) {
         if (IS_IPAD) {
@@ -53,7 +53,7 @@
     } else {
         button_width = 65;
     }
-    
+
     ZoomVideoSDKUser *myUser = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     _audioBtn.frame = CGRectMake(0, 0, button_width, button_width * ([UIImage imageNamed:@"icon_no_audio"].size.height/[UIImage imageNamed:@"icon_no_audio"].size.width));
     if (myUser.audioStatus.audioType == ZoomVideoSDKAudioType_None) {
@@ -65,13 +65,13 @@
             [_audioBtn setImage:[UIImage imageNamed:@"icon_unmute"] forState:UIControlStateNormal];
         }
     }
-    
+
     _shareBtn.frame = CGRectMake(0, CGRectGetMaxY(_audioBtn.frame), button_width, button_width * ([UIImage imageNamed:@"icon_video_share"].size.height/[UIImage imageNamed:@"icon_video_share"].size.width));
     _videoBtn.frame = CGRectMake(0, CGRectGetMaxY(_shareBtn.frame), button_width, button_width * ([UIImage imageNamed:@"icon_video_on"].size.height/[UIImage imageNamed:@"icon_video_on"].size.width));
     _moreBtn.frame = CGRectMake(0, CGRectGetMaxY(_videoBtn.frame), button_width, button_width * ([UIImage imageNamed:@"icon_video_more"].size.height/[UIImage imageNamed:@"icon_video_more"].size.width));
-    
+
     float controlBar_height = Height(_moreBtn)+Height(_videoBtn)+Height(_shareBtn)+Height(_audioBtn);
-    
+
     float controlBar_x = SCREEN_WIDTH-button_width - 5;
     float controlBar_y;
     if (landscape) {
@@ -81,7 +81,7 @@
             controlBar_x = SCREEN_WIDTH-button_width - 12;
         }
     }
-    
+
     if (landscape && !IS_IPAD && SCREEN_HEIGHT <= 375.0) {
         controlBar_y = Top_Height + 20;
     } else {
@@ -97,26 +97,26 @@
     [_videoBtn setImage:[UIImage imageNamed:@"icon_video_on"] forState:UIControlStateSelected];
     [_videoBtn addTarget: self action: @selector(onBarButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_videoBtn];
-    
+
     _shareBtn = [[UIButton alloc] init];
     _shareBtn.tag = kTagButtonShare;
     [_shareBtn setImage:[UIImage imageNamed:@"icon_video_share"] forState:UIControlStateNormal];
     [_shareBtn addTarget: self action: @selector(onBarButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_shareBtn];
-    
+
     _audioBtn = [[UIButton alloc] init];
     _audioBtn.tag = kTagButtonAudio;
     [_audioBtn setImage:[UIImage imageNamed:@"icon_no_audio"] forState:UIControlStateNormal];
     [_audioBtn addTarget: self action: @selector(onBarButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_audioBtn];
-        
+
     _moreBtn = [[UIButton alloc] init];
     _moreBtn.tag = kTagButtonMore;
     [_moreBtn setImage:[UIImage imageNamed:@"icon_video_more"] forState:UIControlStateNormal];
     [_moreBtn addTarget: self action: @selector(onBarButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_moreBtn];
-    
-    
+
+
 }
 
 - (void)showAudioTestMenu:(id)sender
@@ -125,7 +125,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Audio"
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     if (!IS_IPAD) {
         NSString *speakDispaly;
         if ([self isCurrentOutputDeviceSpeaker]) {
@@ -139,7 +139,7 @@
                                                               [self switchSpeaker];
                                                           }]];
     }
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"out: showAirPlayPicker"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -155,7 +155,7 @@
                                                       handler:^(UIAlertAction *action) {
         [self showChangeAudioInputTestMenu:sender];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"startAudio"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -208,7 +208,7 @@
                                                       handler:^(UIAlertAction *action) {
         [[[ZoomVideoSDK shareInstance] getAudioHelper] unSubscribe];
                                                       }]];
-    
+
     ZoomVideoSDKAudioSettingHelper *audioSettingHelper = [[ZoomVideoSDK shareInstance] getAudioSettingHelper];
     BOOL isOrigin = [audioSettingHelper isMicOriginalInputEnable];
     [alertController addAction:[UIAlertAction actionWithTitle:isOrigin?@"origin: set to non-origin":@"non-origin: set to origin"
@@ -216,9 +216,9 @@
                                                       handler:^(UIAlertAction *action) {
         [audioSettingHelper enableMicOriginalInput:!isOrigin];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -248,7 +248,7 @@
     }
 
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -278,7 +278,7 @@
     }
 
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -309,7 +309,7 @@
                                                           [[[ZoomVideoSDK shareInstance] getVideoHelper] unSpotlightAllVideos];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -350,7 +350,7 @@
         [[[ZoomVideoSDK shareInstance] getVideoHelper] rotateMyVideo:UIDeviceOrientationLandscapeRight];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -379,9 +379,9 @@
                                                               [[[ZoomVideoSDK shareInstance] getVideoHelper] switchCamera:deviceId];
                                                           }]];
     }
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -411,9 +411,9 @@
             [self showDeviceMultiStreamTestMenu:sender with:device];
                                                           }]];
     }
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -454,9 +454,9 @@
                                                       handler:^(UIAlertAction *action) {
         [[[ZoomVideoSDK shareInstance] getVideoHelper] unmuteMultiStreamVideo:device.deviceId];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -517,20 +517,20 @@
             NSLog(@"isMirrorMyVideoEnabled %@", @(ret));
         });
                                                       }]];
-    
+
     NSString *alphaMode = [NSString stringWithFormat:@"Alpha Mode,can:%@,isEnable:%@,isDevce:%@", @([[[ZoomVideoSDK shareInstance] getVideoHelper] canEnableAlphaChannelMode]), @([[[ZoomVideoSDK shareInstance] getVideoHelper] isAlphaChannelModeEnabled]), @([[[ZoomVideoSDK shareInstance] getVideoHelper] isDeviceSupportAlphaChannelMode])];
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Enalbe %@", alphaMode]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         [[[ZoomVideoSDK shareInstance] getVideoHelper] enableAlphaChannelMode:YES];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Disable %@", alphaMode]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         [[[ZoomVideoSDK shareInstance] getVideoHelper] enableAlphaChannelMode:NO];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"videoPreference:"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -538,7 +538,7 @@
         setting.mode = ZoomVideoSDKVideoPreferenceMode_Sharpness;
         [[[ZoomVideoSDK shareInstance] getVideoHelper] setVideoQualityPreference:setting];
                                                       }]];
-    
+
     ZoomVideoSDKUser *myUser = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     BOOL isVideoOn = myUser.getVideoCanvas.videoStatus.on;
     NSString *isVideoOnStr = [NSString stringWithFormat:@"video status:%@", @(isVideoOn)];
@@ -546,11 +546,11 @@
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
                                                       }]];
-    
-    
-    
+
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -583,7 +583,7 @@
         [arr addObject:[NSString stringWithFormat:@"subsession%d",arc4random()%100]];
         i--;
     }
-    
+
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"SubSession"
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
@@ -592,7 +592,7 @@
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"addSubSessionToPreList:%@",arr.description);
-        
+
         [[[ZoomVideoSDK shareInstance] getsubSessionHelper] addSubSessionToPreList:arr];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"removeSubSessionFromPreList"
@@ -608,36 +608,36 @@
     [alertController addAction:[UIAlertAction actionWithTitle:@"clearSubSessionPreList"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         [[[ZoomVideoSDK shareInstance] getsubSessionHelper] clearSubSessionPreList];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"getSubSessionPreList"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"getSubSessionPreList:%@",[[[ZoomVideoSDK shareInstance] getsubSessionHelper] getSubSessionPreList].description);
-        
+
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"commitSubSessionList"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         [[[ZoomVideoSDK shareInstance] getsubSessionHelper] commitSubSessionList];
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"getCommittedSubSessionList"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"getSubSessionPreList:%@",[[[ZoomVideoSDK shareInstance] getsubSessionHelper] getCommittedSubSessionList].description);
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"DemoTestSubsessionView"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"getSubSessionPreList:%@",[[[ZoomVideoSDK shareInstance] getsubSessionHelper] getCommittedSubSessionList].description);
                                                       }]];
-        
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -672,7 +672,7 @@
         ZoomVideoSDKError ret  = [[[ZoomVideoSDK shareInstance] getLiveStreamHelper] startLiveStreamWithParams:params];
         NSLog(@"startLiveStreamWithParams:%@",@(ret));
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"StartLiveStream_GalleryView_BurntIn"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -714,14 +714,14 @@
          updateLiveStreamSetting:setting];
         NSLog(@"getCurrentLiveStreamSetting :%@",setting.description);
         NSLog(@"updateLiveStreamSetting:%@",@(ret));
-        
-        
+
+
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"canStartLiveStream:%@",@([[ZoomVideoSDK shareInstance] getLiveStreamHelper].canStartLiveStream)]
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -741,7 +741,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"canStart:%d canStop:%d OtherSharingWb:%d",[wbHelper canStartShareWhiteboard],[wbHelper canStopShareWhiteboard],[wbHelper isOtherSharingWhiteboard]]
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"setPresentViewController"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -754,7 +754,7 @@
         ZoomVideoSDKError ret = [wbHelper unSubscribeWhiteboard];
         NSLog(@"subscribeWhitebaord   - %lu",(unsigned long)ret);
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"startShareWhiteboard"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -773,10 +773,10 @@
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"isWhiteboardShareLocked:%d",[wbHelper exportWhiteboard:ZoomVideoSDKWhiteboardExport_Format_PDF]);
     }]];
-        
+
 
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -800,7 +800,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:canStartRecording
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"startCloudRecording"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -825,7 +825,7 @@
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -843,23 +843,23 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Phone"
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     NSString *isSupportPhoneFeature = [NSString stringWithFormat:@"isSupportPhoneFeature:%@",@([[ZoomVideoSDK shareInstance] getPhoneHelper].isSupportPhoneFeature)];
     [alertController addAction:[UIAlertAction actionWithTitle:isSupportPhoneFeature
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"getSupportCountryInfo"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSArray *infoArr = [[[ZoomVideoSDK shareInstance] getPhoneHelper] getSupportCountryInfo];
         NSLog(@"getSupportCountryInfo:%@", infoArr);
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"invitePhoneUser:"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         ZoomVideoSDKInvitePhoneUserInfo *info = [[ZoomVideoSDKInvitePhoneUserInfo alloc] init];
         info.name = @"";
         info.countryCode = @"";
@@ -876,16 +876,16 @@
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"getInviteByPhoneStatus:%@",@([[ZoomVideoSDK shareInstance] getPhoneHelper].getInviteByPhoneStatus)]
                                                         style:UIAlertActionStyleDefault
                                                       handler:nil]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"Get dial in number list"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         NSArray *dialInList = [[[ZoomVideoSDK shareInstance] getPhoneHelper] getSessionDialInNumbers];
         NSLog(@"dial in list:\n %@", dialInList);
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -905,35 +905,35 @@
 
     NSMutableArray *allUser = [[[[ZoomVideoSDK shareInstance] getSession] getRemoteUsers] mutableCopy];
     [allUser addObject:[[[ZoomVideoSDK shareInstance] getSession] getMySelf]];
-    
+
     ZoomVideoSDKUser *my = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
     NSArray <ZoomVideoSDKRawDataPipe *> *pipeList = my.getMultiCameraStreamList;
     for (ZoomVideoSDKRawDataPipe *pipe in pipeList) {
         NSString *deviceId = [[[ZoomVideoSDK shareInstance] getVideoHelper] getDeviceIDByMyPipe:pipe];
         NSLog(@"User getDeviceIDByMyPipe:%@", deviceId);
     }
-    
+
     NSArray <ZoomVideoSDKVideoCanvas *> *canvasList = my.getMultiCameraCanvasList;
     for (ZoomVideoSDKVideoCanvas *canvas in canvasList) {
         NSString *deviceId = [[[ZoomVideoSDK shareInstance] getVideoHelper] getDeviceIDByMyCanvas:canvas];
         NSLog(@"User getDeviceIDByMyCanvas:%@", deviceId);
     }
-    
+
     NSString *userProperty = @"";
     for (ZoomVideoSDKUser *user in allUser) {
-        
+
         [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@  host:%@, manager:%@, spot:%@", user.getUserName, /*user.getUserReference,*/ @(user.isHost), @(user.isManager), @(user.isVideoSpotLighted)]
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * _Nonnull action) {
             [self showUserActionMenu:sender andUser:user];
         }]];
-       
+
         userProperty = [userProperty stringByAppendingFormat:@"\n%@ : %@",user.getUserName, user.debugDescription];
     }
     NSLog(@"User property:%@", userProperty);
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -947,7 +947,7 @@
 
 - (void)showBroadcastStreamTestMenu:(id)sender
 {
-    
+
     ZoomVideoSDKBroadcastStreamingHelper *helper = [[ZoomVideoSDK shareInstance] getBroadcastStreamingHelper];
     ZoomVideoSDKBroadcastStreamingViewerHelper *viewerHelper = [[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper];
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -955,25 +955,25 @@
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
 
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"startBroadcast" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSLog(@"startBroadcast:%@",@([helper startBroadcast]));
     }]];
-    
+
     for (NSString *channelID in _broadcastChannelIDs) {
         [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"stop:%@",channelID] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSLog(@"stopBroadcast:%@",@([helper stopBroadcast:channelID]));
         }]];
-        
+
         [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"getStatus:%@",channelID] style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             NSLog(@"getBroadcastStatus:%@",@([helper getBroadcastStatus:channelID]));
         }]];
     }
-   
-    
-    
+
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -995,25 +995,25 @@
                                                       handler:^(UIAlertAction * _Nonnull action) {
         [[[ZoomVideoSDK shareInstance] getUserHelper] changeName:@"Test User" withUser:user];
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Make %@'s Host", user.getUserName]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
         [[[ZoomVideoSDK shareInstance] getUserHelper] makeHost:user];
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Remove %@", user.getUserName]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
         [[[ZoomVideoSDK shareInstance] getUserHelper] removeUser:user];
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Make %@ as Manager", user.getUserName]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
         [[[ZoomVideoSDK shareInstance] getUserHelper] makeManager:user];
     }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Revoke %@'s Manager", user.getUserName]
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction * _Nonnull action) {
@@ -1040,7 +1040,7 @@
         [[[ZoomVideoSDK shareInstance] getVideoHelper] unSpotLightVideo:user];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -1068,16 +1068,16 @@
         case ZoomVideoSDKChatPrivilege_No_One:
             PrivilegeStr = @"_No_One";
             break;
-            
+
         default:
             break;
     }
-    
+
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Chat:%@ PrivateChat:%@ Privilege:%@",@(isCanChat),@(isCanPrivateChat),PrivilegeStr]
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"changeAttendeeChatPrivilege"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -1114,10 +1114,10 @@
                                                       handler:^(UIAlertAction *action) {
         NSLog(@"call --[ZoomVideoSDKChatHelper SendChatToAll:] ret:%d",[chatHelper SendChatToAll:[NSString stringWithFormat:@"send all %d",arc4random()%100+100]]);
                                                       }]];
-    
 
-    
-    
+
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"SendChatToUser"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -1142,12 +1142,12 @@
             popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
         }
         [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-        
+
       }]];
-    
-    
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -1168,7 +1168,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"CRC"
                                                                              message:[enable?@"CRC Enabled":@"CRC Disabled" stringByAppendingFormat:@" Session Num:%@, %@", @([session getSessionNumber]), [crcHelper getSessionSIPAddress]]
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"CRC callCRCDevice"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -1177,7 +1177,7 @@
                NSLog(@"call -[ZoomVideoSDKCRCHelper callCRCDevice:callType:] ret:%d",ret);
         NSLog(@"call -[ZoomVideoSDKCRCHelper callCRCDevice:callType:] ret:%lu",(unsigned long)ret);
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"CRC cancelCallCRCDevice"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -1186,7 +1186,7 @@
         NSLog(@"call -[ZoomVideoSDKCRCHelper cancelCallCRCDevice:] ret:%@",@(ret));
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -1206,7 +1206,7 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"CanStartLTT:%@",@(ret)]
                                                                              message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"getLiveTranscriptionStatus"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
@@ -1226,21 +1226,21 @@
     [alertController addAction:[UIAlertAction actionWithTitle:@"getSpokenLanguage"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper getSpokenLanguage] ret:%@",[lttHelper getSpokenLanguage].description );
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"getAvailableSpokenLanguages"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper getAvailableSpokenLanguages] ret:%@",[lttHelper getAvailableSpokenLanguages].description );
                                                       }]];
-    
-    
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"setSpokenLanguage"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
             AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"setSpokenLanguage"]
                                                                                      message:nil
@@ -1253,9 +1253,9 @@
                     NSLog(@"setSpokenLanguage: %d",[lttHelper setSpokenLanguage:tmp.languageID]);
                                                                   }]];
             }
-            
+
             [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-            
+
             UIPopoverPresentationController *popover = alertController.popoverPresentationController;
             if (popover)
             {
@@ -1265,42 +1265,42 @@
                 popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
             }
             [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-        
+
       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"enableReceiveSpokenLanguageContent"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper enableReceiveSpokenLanguageContent] YES ret:%d",[lttHelper enableReceiveSpokenLanguageContent:YES] );
                                                       }]];
-    
-    
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"isAllowViewFullTranscriptEnable"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper isAllowViewFullTranscriptEnable] ret:%d",[lttHelper isAllowViewFullTranscriptEnable] );
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"getHistoryTranslationMessageList"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper getHistoryTranslationMessageList] ret:%@",[lttHelper getHistoryTranslationMessageList].description );
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"getTranslationLanguage"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
         NSLog(@"call -[ZoomVideoSDKLiveTranscriptionHelper getSpokenLanguage] ret:%@",[lttHelper getTranslationLanguage].description );
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"setTranslationLanguage"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-        
+
             AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"setSpokenLanguage"]
                                                                                      message:nil
@@ -1313,9 +1313,9 @@
                     NSLog(@"setSpokenLanguage: %d",[lttHelper setTranslationLanguage:tmp.languageID]);
                                                                   }]];
             }
-            
+
             [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-            
+
             UIPopoverPresentationController *popover = alertController.popoverPresentationController;
             if (popover)
             {
@@ -1325,12 +1325,12 @@
                 popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
             }
             [[appDelegate topViewController] presentViewController:alertController animated:YES completion:nil];
-        
+
       }]];
-    
-    
+
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -1348,28 +1348,28 @@
     BOOL enable = [session isFileTransferEnable];
     NSString *wl = [session getTransferFileTypeWhiteList];
     unsigned long long maxSize =[session getMaxTransferFileSize];
-    
-    
+
+
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"FileTransfer"
                                                                              message:[NSString stringWithFormat:@"%@\n%@\n%@", enable?@"Enabled":@"Disabled", wl, @(maxSize)]
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:@"Session Send to ALL"
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
         [session transferFile:[self findFirstLogFilesInTmpDirectory]];
                                                       }]];
-    
+
     NSArray <ZoomVideoSDKUser *>* users = [[[ZoomVideoSDK shareInstance] getSession] getRemoteUsers];
     for (ZoomVideoSDKUser *user in users) {
         [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Send:%@ %@",user.getUserName,@(user.getUserID)] style:UIAlertActionStyleDefault  handler:^(UIAlertAction *action) {
             [user transferFile:[self findFirstLogFilesInTmpDirectory]];
         }]];
     }
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-    
+
     UIPopoverPresentationController *popover = alertController.popoverPresentationController;
     if (popover)
     {
@@ -1390,14 +1390,14 @@
         NSLog(@"Error reading tmp directory: %@", error);
         return nil;
     }
-    
+
     for (NSString *file in directoryContents) {
         if ([file.pathExtension isEqualToString:@"log"]) {
             NSString *filePath = [tmpDirectory stringByAppendingPathComponent:file];
             return filePath;
         }
     }
-    
+
     return nil;
 }
 
@@ -1554,7 +1554,7 @@
                 [arr addObject:info5];
                 ZoomVideoSDKMaskHelper *helper = [[ZoomVideoSDK shareInstance] getMaskHelper];
                 UIImage * maskImage = [helper generateMask:arr width:w height:h];
-                
+
                 BOOL isMirror = [[ZoomVideoSDK shareInstance] getVideoHelper].isMyVideoMirrored;
                 [helper setVideoMask:maskImage background:[UIImage imageNamed:@"intro_bg_2"] mirror:isMirror];
             }]];
@@ -1617,13 +1617,13 @@
     if (status != noErr) {
         return;
     }
-    
+
     CFArrayRef outputs = (CFArrayRef)CFDictionaryGetValue(route, kAudioSession_AudioRouteKey_Outputs);
     if (!outputs || CFArrayGetCount(outputs) == 0) {
         if(route) CFRelease(route);
         return;
     }
-    
+
     CFDictionaryRef item = (CFDictionaryRef)CFArrayGetValueAtIndex(outputs, 0);
     CFStringRef device = (CFStringRef)CFDictionaryGetValue(item, kAudioSession_AudioRouteKey_Type);
     if (device && COMPARE(device, kAudioSessionOutputRoute_BuiltInReceiver))
@@ -1636,7 +1636,7 @@
         UInt32 isSpeaker = kAudioSessionOverrideAudioRoute_None;
         AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(isSpeaker), &isSpeaker);
     }
-    
+
     if(route) CFRelease(route);
 }
 
@@ -1648,13 +1648,13 @@
     if (status != noErr) {
         return NO;
     }
-    
+
     CFArrayRef outputs = (CFArrayRef)CFDictionaryGetValue(route, kAudioSession_AudioRouteKey_Outputs);
     if (!outputs || CFArrayGetCount(outputs) == 0) {
         if(route) CFRelease(route);
         return NO;
     }
-    
+
     CFDictionaryRef item = (CFDictionaryRef)CFArrayGetValueAtIndex(outputs, 0);
     CFStringRef device = (CFStringRef)CFDictionaryGetValue(item, kAudioSession_AudioRouteKey_Type);
     if (device && COMPARE(device, kAudioSessionOutputRoute_BuiltInReceiver))
@@ -1665,7 +1665,7 @@
     {
         return YES;
     }
-    
+
     if(route) CFRelease(route);
     return NO;
 }

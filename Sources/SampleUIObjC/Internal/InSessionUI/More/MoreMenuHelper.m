@@ -6,7 +6,7 @@
 //  Copyright © 2022 Zoom. All rights reserved.
 //
 
-#import "MoreMenuHelper.h"
+#import "InSessionUI/More/MoreMenuHelper.h"
 #import <AudioToolbox/AudioToolbox.h>
 
 static MoreMenuHelper *instance = nil;
@@ -31,13 +31,13 @@ static dispatch_once_t onceToken;
     if (status != noErr) {
         return;
     }
-    
+
     CFArrayRef outputs = (CFArrayRef)CFDictionaryGetValue(route, kAudioSession_AudioRouteKey_Outputs);
     if (!outputs || CFArrayGetCount(outputs) == 0) {
         if(route) CFRelease(route);
         return;
     }
-    
+
     CFDictionaryRef item = (CFDictionaryRef)CFArrayGetValueAtIndex(outputs, 0);
     CFStringRef device = (CFStringRef)CFDictionaryGetValue(item, kAudioSession_AudioRouteKey_Type);
     if (device && COMPARE(device, kAudioSessionOutputRoute_BuiltInReceiver))
@@ -52,7 +52,7 @@ static dispatch_once_t onceToken;
         AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(isSpeaker), &isSpeaker);
         self.isSpeaker = NO;
     }
-    
+
     if(route) CFRelease(route);
 }
 

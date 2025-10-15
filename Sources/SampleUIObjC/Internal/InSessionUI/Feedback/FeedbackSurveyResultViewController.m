@@ -6,11 +6,11 @@
 //  Copyright © 2022 Zoom. All rights reserved.
 //
 
-#import "FeedbackSurveyResultViewController.h"
-#import "FeedbackSurveyResultTableViewCell.h"
+#import "InSessionUI/Feedback/FeedbackSurveyResultViewController.h"
+#import "InSessionUI/Feedback/FeedbackSurveyResultTableViewCell.h"
 #import "FeedbackPopViewController.h"
-#import "SimulateStorage.h"
-#import "MoreMenuViewController.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
+#import "InSessionUI/More/MoreMenuViewController.h"
 
 
 @interface FeedbackSurveyResultViewController ()<UITableViewDataSource, UITableViewDelegate>
@@ -37,7 +37,7 @@
     [self initUI];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveFeedbackActionAction:) name:Notification_ReceiveFeedbackAction object:nil];
-    
+
     int total = 0;
     for (FeedbackSurvey *feedback in [SimulateStorage shareInstance].feedbackSource) {
         total += feedback.responseCount;
@@ -78,11 +78,11 @@
     titleLabel.font = [UIFont boldSystemFontOfSize:18];
     titleLabel.textAlignment = 1;
     [self.view addSubview:titleLabel];
-    
+
     UIView *descView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(titleLabel.frame), SCREEN_WIDTH, 30)];
     descView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:descView];
-    
+
     _descLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, CGRectGetWidth(descView.frame)-40, CGRectGetHeight(descView.frame))];
     _descLabel.textColor = RGBCOLOR(0x6E, 0x76, 0x80);
     _descLabel.text = @"0 responses";
@@ -90,11 +90,11 @@
     _descLabel.textAlignment = 0;
     _descLabel.numberOfLines = 0;
     [descView addSubview:_descLabel];
-    
+
     UIView *FeedbBacktitleView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(descView.frame), SCREEN_WIDTH, 50)];
     FeedbBacktitleView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:FeedbBacktitleView];
-    
+
     UILabel *FeedbBacktitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, CGRectGetWidth(FeedbBacktitleView.frame)-40, CGRectGetHeight(FeedbBacktitleView.frame))];
     FeedbBacktitleLabel.textColor = RGBCOLOR(0x13, 0x16, 0x19);
     FeedbBacktitleLabel.text = @"How would you rate this session?";
@@ -102,7 +102,7 @@
     FeedbBacktitleLabel.textAlignment = 0;
     FeedbBacktitleLabel.numberOfLines = 0;
     [FeedbBacktitleView addSubview:FeedbBacktitleLabel];
-        
+
     _publishBtn = [[UIButton alloc] initWithFrame:CGRectMake(30, SCREEN_HEIGHT-45-30, SCREEN_WIDTH-60, 45)];
 //    [publishBtn setBackgroundColor:RGBCOLOR(0x0E, 0x71, 0xEB)];
     [_publishBtn setBackgroundImage:[self imageWithColor:RGBCOLOR(0x0E, 0x71, 0xEB)] forState:UIControlStateNormal];
@@ -115,7 +115,7 @@
     _publishBtn.layer.cornerRadius = 10;
     _publishBtn.clipsToBounds = YES;
     [self.view addSubview:_publishBtn];
-    
+
     _tipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, CGRectGetMinY(_publishBtn.frame)-30, SCREEN_WIDTH-40, 20)];
     _tipsLabel.textColor = RGBCOLOR(0x6E, 0x76, 0x80);
     _tipsLabel.text = @"The survey has been pushed. Re-push in 59s.";
@@ -124,7 +124,7 @@
     _tipsLabel.numberOfLines = 0;
     [self.view addSubview:_tipsLabel];
     _tipsLabel.hidden = YES;
-    
+
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(FeedbBacktitleView.frame), SCREEN_WIDTH, SCREEN_HEIGHT-290) style:UITableViewStylePlain];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -145,13 +145,13 @@
 - (void)onPublishClicked:(id)sender
 {
     BOOL hasPopConfirmView = [SimulateStorage hasPopConfirmView];
-    
+
     if (hasPopConfirmView) {
         [[SimulateStorage shareInstance] sendFeedbackPushCmd];
         [self beginTimer];
     } else {
         [SimulateStorage hasPopConfirmView:YES];
-        
+
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
         vc.type = FeedbackPopViewTpye_Push;
@@ -175,7 +175,7 @@
 - (void)countDown {
     self.count--;
     _tipsLabel.text = [NSString stringWithFormat:@"The survey has been pushed. Re-push in %ds.",self.count];
-    
+
     if (self.count == 0) {
         [self.publishBtn setEnabled:YES];
         [self.timer invalidate];
@@ -209,7 +209,7 @@
     cell.titleLabel.text = item.title;
     cell.iconImg.image = [UIImage imageNamed:item.icon];
     cell.responseLabel.text = [NSString stringWithFormat:@"%d responses", item.responseCount];
-    
+
     float total = 0.00f;
     for (FeedbackSurvey *feedback in [SimulateStorage shareInstance].feedbackSource) {
         total += feedback.responseCount;

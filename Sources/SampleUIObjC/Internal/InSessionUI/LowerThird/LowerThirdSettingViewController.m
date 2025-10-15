@@ -7,7 +7,7 @@
 //
 
 #import "LowerThirdSettingViewController.h"
-#import "SimulateStorage.h"
+#import "InSessionUI/Storage/SimulateStorage.h"
 #import "LowerThirdPanel.h"
 
 
@@ -29,11 +29,11 @@
         [self.navigationController.navigationBar setTintColor:RGBCOLOR(0x2D, 0x8C, 0xFF)];
         self.navigationController.navigationBar.translucent = NO;
     }
-    
+
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
-    
+
     UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.frame];
     tableView.delegate = self;
     tableView.dataSource = self;
@@ -42,9 +42,9 @@
     tableView.backgroundColor = [UIColor whiteColor];
     [tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.view addSubview:tableView];
-    
+
     [self initNavBarItems];
-    
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         BOOL lowerThirdEnabled = [SimulateStorage isLowerThirdEnabled];
         {
@@ -57,11 +57,11 @@
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-    
+
     if (!self.isPushed) {
         UIView *navBarView = [self.view viewWithTag:91];
         UILabel *titleLabel = [navBarView viewWithTag:95];
-        
+
         navBarView.frame = CGRectMake(0, 0, self.view.bounds.size.width, 64);
         titleLabel.frame = CGRectMake(80, 0, self.view.bounds.size.width - 180, 64);
         self.saveBtn.frame = CGRectMake(self.view.bounds.size.width - 80, 0, 80, 64);
@@ -108,7 +108,7 @@
         [self initPreview:cell.contentView];
     else
         [self initSettingPanel:cell.contentView];
-    
+
     return cell;
 }
 
@@ -123,35 +123,35 @@
     closeBtn.titleLabel.font = [UIFont systemFontOfSize:16];
     [closeBtn setTitleColor:RGBCOLOR(0x0e, 0x72, 0xed) forState:UIControlStateNormal];
     [closeBtn addTarget:self action:@selector(onCancelBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     self.saveBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 80, 0, 80, 64)];
     [self.saveBtn setTitle:@"Save" forState:UIControlStateNormal];
     self.saveBtn.titleLabel.font = [UIFont systemFontOfSize:16];
     [self.saveBtn setTitleColor:RGBCOLOR(0x6e, 0x76, 0x80) forState:UIControlStateDisabled];
     [self.saveBtn setTitleColor:RGBCOLOR(0x0e, 0x72, 0xed) forState:UIControlStateNormal];
     [self.saveBtn addTarget:self action:@selector(onSaveBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     if (!self.isPushed) {
         UIView *navBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 64)];
         navBarView.backgroundColor = [UIColor whiteColor];
         navBarView.tag = 91;
         [self.view addSubview:navBarView];
-        
+
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(80, 0, self.view.bounds.size.width - 180, 64)];
         titleLabel.text = @"Preview";
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.font = [UIFont boldSystemFontOfSize:17.];
         titleLabel.tag = 95;
-        
+
         [navBarView addSubview:closeBtn];
         [navBarView addSubview:self.saveBtn];
         [navBarView addSubview:titleLabel];
     } else {
         self.navigationItem.title = @"Preview";
-        
+
         UIBarButtonItem *leftItem = [[UIBarButtonItem alloc] initWithCustomView:closeBtn];
         self.navigationItem.leftBarButtonItem = leftItem;
-        
+
         UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:self.saveBtn];
         self.navigationItem.rightBarButtonItem = rightItem;
     }
@@ -170,27 +170,27 @@
     self.preview.userInteractionEnabled = YES;
     [[self.preview layer] setCornerRadius:16.0];
     [self.preview setClipsToBounds:YES];
-    
+
     [cell addSubview:self.preview];
-    
+
     UIView *bottomBar = [[UIView alloc] initWithFrame:CGRectMake(0, self.preview.frame.size.height - 60, self.preview.frame.size.width, 60)];
     bottomBar.backgroundColor = RGBCOLOR(37, 42, 48);
     [self.preview addSubview:bottomBar];
-    
+
     UILabel *lowerLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 0, 100, 60)];
     lowerLabel.text = @"Lower Third";
     lowerLabel.textColor = [UIColor whiteColor];
     [lowerLabel setFont:[UIFont systemFontOfSize:16.]];
     [bottomBar addSubview:lowerLabel];
-    
+
     UISwitch *enableSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(bottomBar.frame.size.width - 65, 15, 100, 40)];
     [enableSwitch addTarget:self action:@selector(switchAction:) forControlEvents:UIControlEventValueChanged];
     enableSwitch.on = [SimulateStorage isLowerThirdEnabled];
     [bottomBar addSubview:enableSwitch];
-    
+
     self.displayPanel = [[LowerThirdPanel alloc] initWithFrame:CGRectMake(16, 16, 150, 48)];
     [self.preview addSubview:self.displayPanel];
-    
+
     ZoomVideoSDKSession *session = [[ZoomVideoSDK shareInstance] getSession];
     ZoomVideoSDKUser *my = [session getMySelf];
     LowerThirdCmd *cmd = [[SimulateStorage shareInstance] getUsersLowerThird:my];
@@ -210,7 +210,7 @@
     CGFloat w = CGRectGetWidth(self.preview.frame);
     self.settingPanel = [[UIView alloc] initWithFrame:CGRectMake(16, y, w, 400)];
     [cell addSubview:self.settingPanel];
-    
+
     UILabel *nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 74, 20)];
     nameLabel.text = @"Your Name";
     nameLabel.font = [UIFont systemFontOfSize:14.0];
@@ -221,7 +221,7 @@
     redStar.textColor = [UIColor redColor];
     [self.settingPanel addSubview:nameLabel];
     [self.settingPanel addSubview:redStar];
-    
+
     UITextField *nameInput = [[UITextField alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(nameLabel.frame) + 5, w, 40)];
     nameInput.layer.cornerRadius = 10.0;
     nameInput.layer.borderColor = RGBCOLOR(110, 118, 128).CGColor;
@@ -235,7 +235,7 @@
     nameInput.leftViewMode = UITextFieldViewModeAlways;
     [nameInput addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     [self.settingPanel addSubview:nameInput];
-    
+
     UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(nameInput.frame) + 20, 76, 20)];
     descLabel.text = @"Description";
     descLabel.font = [UIFont systemFontOfSize:14.0];
@@ -246,7 +246,7 @@
 //    redStar2.textColor = [UIColor redColor];
     [self.settingPanel addSubview:descLabel];
 //    [self.settingPanel addSubview:redStar2];
-    
+
     UITextField *descInput = [[UITextField alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(descLabel.frame) + 5, w, 40)];
     descInput.layer.cornerRadius = 10.0;
     descInput.layer.borderColor = RGBCOLOR(110, 118, 128).CGColor;
@@ -262,13 +262,13 @@
     [descInput addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     [self.settingPanel addSubview:descInput];
 
-    
+
     UILabel *colorLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(descInput.frame) + 20, 100, 20)];
     colorLabel.text = @"Brand Color";
     colorLabel.font = [UIFont systemFontOfSize:14.0];
     colorLabel.textColor = [UIColor blackColor];
     [self.settingPanel addSubview:colorLabel];
-    
+
     NSInteger colorIndex = [SimulateStorage myLowerThirdColorIndex];
     self.selectColorIdx = colorIndex;
     NSArray *colorArr = [SimulateStorage colorArray];
@@ -282,12 +282,12 @@
             x = sX - (sX % (56 + 12));
             y = y + yX * (56 + 12);
         }
-        
+
         UIColor *bgColor = colorArr[i];
         if(i == 0) {
             bgColor = [UIColor colorWithRed:82/255.0 green:82/255.0 blue:128/255.0 alpha:0.09];
         }
-        
+
         UIButton *colorBtn = [self buttonWithColor:bgColor andFrame:CGRectMake(x, y, 56, 56)];
         if (i == 0) {
             UIImage *img = [UIImage imageNamed:@"colorNone"];
@@ -303,13 +303,13 @@
         }
         [self.settingPanel addSubview:colorBtn];
     }
-    
+
     NSString *lowerName = [SimulateStorage myLowerThirdName];
     NSString *lowerdesc = [SimulateStorage myLowerThirdDesc];
     if (!lowerName)
         lowerName = [UIDevice currentDevice].name;
     nameInput.text = lowerName;
-    
+
     if (lowerdesc) {
         descInput.text = lowerdesc;
     }
@@ -370,13 +370,13 @@
     {
         [[SimulateStorage shareInstance] addMyLowerThird:name.text desc:(desc.text ? desc.text : @"") colorIndex:self.selectColorIdx];
         [[SimulateStorage shareInstance] sendMyLowerThird];
-        
+
         if (self.isPushed) {
             [self.navigationController popViewControllerAnimated:YES];
         } else {
             [self dismissViewControllerAnimated:YES completion:nil];
         }
-        
+
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc postNotificationName:kLowerThirdSavedNoti object:nil];
     }
@@ -401,13 +401,13 @@
 - (void)colorChange:(NSInteger)colorIndex
 {
     UIColor *color = [[SimulateStorage colorArray] objectAtIndex:colorIndex];
-    
+
     UIView *lineView = [self.displayPanel viewWithTag:31];
     UILabel *descLabel = [self.displayPanel viewWithTag:33];
     UIView *descBgView = [self.displayPanel viewWithTag:34];
-    
+
     lineView.backgroundColor = color;
-    
+
     [descBgView.layer.sublayers[0] removeFromSuperlayer];
     CAShapeLayer *layer = [[CAShapeLayer alloc] init];
     UIBezierPath *bezier = [[UIBezierPath alloc] init];
@@ -430,18 +430,18 @@
 {
     UITextField *name = [self.settingPanel viewWithTag:20];
     UITextField *desc = [self.settingPanel viewWithTag:21];
-    
-    
+
+
     if (name.text.length > 0)
         [self.saveBtn setEnabled:YES];
     else
         [self.saveBtn setEnabled:NO];
-    
+
     UIView *lineView = [self.displayPanel viewWithTag:31];
     UILabel *nameLabel = [self.displayPanel viewWithTag:32];
     UILabel *descLabel = [self.displayPanel viewWithTag:33];
     UIView *descBgView = [self.displayPanel viewWithTag:34];
-    
+
     if (name.text && name.text.length > 0 &&
         desc.text && desc.text.length > 0)
     {
