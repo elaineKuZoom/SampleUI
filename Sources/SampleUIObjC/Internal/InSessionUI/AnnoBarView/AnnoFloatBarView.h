@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+@import ZoomVideoSDK;
+#import "SampleUI.h"
 
 @interface AnnoFloatBarView : UIView
 - (instancetype)initWithAnnoHelper:(ZoomVideoSDKAnnotationHelper *)helper;
