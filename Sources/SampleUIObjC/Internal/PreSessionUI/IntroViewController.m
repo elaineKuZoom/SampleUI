@@ -286,7 +286,9 @@
     [self updateFifthViewFrame];
     [self updateSixthViewFrame];
 
-    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
+    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
+                                     inBundle:SampleUIResourcesBundle()
+                compatibleWithTraitCollection:nil];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView)-self.view.bounds.size.width * coverImage.size.height/coverImage.size.width, self.view.bounds.size.width, self.view.bounds.size.width * coverImage.size.height/coverImage.size.width);
 
     self.sideButton.frame = CGRectMake(15, Top_Space_Hight, 30, 30);
@@ -418,7 +420,9 @@
     if (!_coverImageView)
     {
         _coverImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _coverImageView.image = [UIImage imageNamed:@"cover_bg"];
+        _coverImageView.image = [UIImage imageNamed:@"cover_bg"
+                                           inBundle:SampleUIResourcesBundle()
+                      compatibleWithTraitCollection:nil];
     }
 
     return _coverImageView;
