@@ -1693,65 +1693,6 @@
 {
     NSLog(@"commandContent:%@, sendUser:%@", commandContent, sendUser);
 
-    if ([commandContent hasPrefix:@"Part|"])
-    {
-        [self.assembler addPart:commandContent];
-        if ([self.assembler isComplete]) {
-            NSString *comStr = [self.assembler assembledMessage];
-            [self handleWithDrawingData:comStr sendUser:sendUser];
-        }
-        return;
-    }
-
-    if ([self handleWithDrawingData:commandContent sendUser:sendUser])
-        return;
-
-    NSData *jsonData = [commandContent dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error;
-    NSMutableDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
-    if (!error && [dict isKindOfClass:[NSMutableDictionary class]]) {
-        NSLog(@"dict %@", dict);
-        if (dict[@"action"]) {
-            NSString *kitID = dict[@"kit"];
-            if ([dict[@"action"] isEqualToString:@"join"]) {
-                for (ZoomVideoSDKSubSessionKit* kit in self.subSessionView.pSubSessionKitList ) {
-                    if ([[kit getSubSessionID] isEqualToString:kitID]) {
-                        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Join session:%@ %@",[kit getSubSessionName],[kit getSubSessionID]]
-                                                                                                 message:nil
-                                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
-
-                        [alertController addAction:[UIAlertAction actionWithTitle:@"Join"
-                                                                            style:UIAlertActionStyleDefault
-                                                                          handler:^(UIAlertAction *action) {
-                            ZoomVideoSDKError ret = [kit joinSubSession];
-                            NSLog(@"joinSubSession ret %lu",(unsigned long)ret);
-                                                                          }]];
-
-                        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                        }]];
-
-//                        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-//                        if (popover)
-//                        {
-//                            UIButton *btn = weakSelf.topBarView.leaveBtn;
-//                            popover.sourceView = btn;
-//                            popover.sourceRect = btn.bounds;
-//                            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-//                        }
-                        [self presentViewController:alertController animated:YES completion:nil];
-                    }
-                }
-            }
-            else if ([dict[@"action"] isEqualToString:@"leave"])  {
-
-            }
-            return;
-        }
-    } else {
-        NSLog(@"dict failed: %@", error.localizedDescription);
-    }
-
-
     CmdTpye cmd_type = [[SimulateStorage shareInstance] getCmdTypeFromCmd:commandContent];
     if (cmd_type == CmdTpye_Reaction) {
         for (ViewItem *item in self.bottomView.viewArray) {
