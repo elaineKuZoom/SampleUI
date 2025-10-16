@@ -11,7 +11,7 @@
 #import "Vender/LGSideMenuController/UIViewController+LGSideMenuController.h"
 #import "PreSessionUI/CreateViewController.h"
 #import "PreSessionUI/MainViewController.h"
-#import <SampleUI/SampleUI-Swift.h>
+#import "SampleUIResourcesBridge.h"
 
 #define kTagImgView         11001
 #if TARGET_OS_VISION
@@ -251,7 +251,9 @@
     [self updateSixthViewFrame];
 
     //UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
-    UIImage *coverImage = [SampleUIBundleHelper imageNamed:@"cover_bg"];
+    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
+                                     inBundle:SampleUIResourcesBundle()
+                compatibleWithTraitCollection:nil];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView) - screenSize.width * coverImage.size.height/coverImage.size.width, screenSize.width, screenSize.width * coverImage.size.height/coverImage.size.width);
 
     self.buttonView.frame = CGRectMake(0, _bg_height, screenSize.width, screenSize.height - _bg_height);
