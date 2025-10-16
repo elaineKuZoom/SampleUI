@@ -3,3 +3,4 @@
 #import "UISceneOrientationHelper.h"
 #import "SampleUI.h"
 #import "SampleUIBootstrap.h"
+#import "SampleUIResourcesBridge.h"
