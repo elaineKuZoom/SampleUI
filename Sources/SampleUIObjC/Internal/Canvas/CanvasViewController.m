@@ -1721,41 +1721,6 @@
     }
 }
 
-- (BOOL)handleWithDrawingData:(NSString *)commandContent sendUser:(ZoomVideoSDKUser * _Nullable)sendUser
-{
-    ZoomVideoSDKUser *my = [[[ZoomVideoSDK shareInstance] getSession] getMySelf];
-    if ([commandContent hasPrefix:@"DrawShape"] && (my.getUserID != sendUser.getUserID))
-    {
-        NSDictionary *dict = [DrawingViewDataHelper parseDrawingShapeString:commandContent];
-        DrawingShapeEventType type = (DrawingShapeEventType)([dict[@"eventType"] integerValue]);
-        switch (type) {
-            case DrawingShapeEventTypeBegin: {
-                [self.view addSubview:self.drawingView];
-                break;
-            }
-            case DrawingShapeEventTypeContent: {
-                NSString *jsonStr = dict[@"content"];
-                if (jsonStr)
-                    [self.drawingView addShapeFromJSONString:jsonStr];
-                break;
-            }
-            case DrawingShapeEventTypeEnd: {
-                [self.drawingView removeFromSuperview];
-                _drawingView = nil;
-                break;
-            }
-            case DrawingShapeEventTypeClear: {
-                [self.drawingView claerView];
-                break;
-            }
-            default:
-                break;
-        }
-        return YES;
-    }
-    return NO;
-}
-
 - (void)onCmdChannelConnectResult:(BOOL)success
 {
     NSLog(@"[onCmdChannelConnectResult] result:%@",@(success));
