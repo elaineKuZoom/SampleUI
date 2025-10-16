@@ -28,6 +28,7 @@ let package = Package(
       dependencies: [
         "ZoomVideoSDK",
         "CptShare",
+        "ZoomTask",
       ],
       path: "Sources/SampleUIObjC",
       publicHeadersPath: "include",
