@@ -8,17 +8,12 @@
 
 #import <Foundation/Foundation.h>
 @import ZoomVideoSDK;
-#import "InSessionUI/Feedback/FeedbackPopViewController.h"
-#import "InSessionUI/Feedback/FeedbackSurveyResultTableViewCell.h"
 
 #define kLowerThirdSavedNoti @"kNoti_LowerThirdSaved"
 
 typedef NS_ENUM(NSUInteger, CmdTpye) {
     CmdTpye_None = 0,
     CmdTpye_Reaction = 1,
-    CmdTpye_Feedback_Push = 2,
-    CmdTpye_Feedback_Submit = 3,
-    CmdTpye_Lowerthird = 4,
 };
 
 typedef NS_ENUM(NSUInteger, kTagReactionTpye) {
@@ -83,12 +78,6 @@ typedef NS_ENUM(NSUInteger, kTagReactionTpye) {
 + (void)hasPopConfirmView:(BOOL)enable;
 
 @property (nonatomic, strong)   NSMutableArray          *feedbackSource;
-- (void)initFeedbackItem;
-- (void)processFeedbackData:(NSString *)cmdString sendUser:(NSNumber *)userId;
-- (NSString *)generateFeedbackPushCmdString;
-- (NSString *)generateFeedbackSubmitCmdString:(kTagFeedbackTpye)type;
-- (kTagFeedbackTpye)getFeedbackTypeFromCmd:(NSString *)cmdString;
-- (BOOL)sendFeedbackPushCmd;
-- (BOOL)sendFeedbackSubmitCmd:(kTagFeedbackTpye)type;
+
 @end
 

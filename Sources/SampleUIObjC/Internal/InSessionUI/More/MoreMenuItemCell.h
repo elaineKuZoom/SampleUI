@@ -16,8 +16,6 @@ typedef NS_ENUM(NSUInteger, kTagMoreMenuTpye) {
     kTagMoreMenuTpye_Mute,
     kTagMoreMenuTpye_TurnOnoffSpeaker,
     kTagMoreMenuTpye_SwitchCamera,
-    kTagMoreMenuTpye_LowerThird,
-    kTagMoreMenuTpye_Feedback,
     kTagMoreMenuTpye_RaiseLowerHand
 };
 

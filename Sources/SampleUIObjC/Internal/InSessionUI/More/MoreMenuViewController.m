@@ -10,10 +10,8 @@
 #import "MoreMenuViewController.h"
 #import "InSessionUI/More/MoreMenuItemCell.h"
 #import "InSessionUI/Storage/SimulateStorage.h"
-#import "InSessionUI/Feedback/FeedbackSurveyResultViewController.h"
-#import "InSessionUI/Feedback/FeedbackPopViewController.h"
 #import "InSessionUI/More/MoreMenuHelper.h"
-#import "InSessionUI/LowerThird/LowerThirdSettingViewController.h"
+
 
 @interface MoreMenuViewController ()<UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, strong)   UITableView             *tableView;
@@ -154,18 +152,6 @@
     item3.icon = @"more_switch_camera_icon";
     [self.dataSource addObject:item3];
 
-    MoreMenuItem * itemLowerThird = [[MoreMenuItem alloc] init];
-    itemLowerThird.type = kTagMoreMenuTpye_LowerThird;
-    itemLowerThird.title = @"Lower Third";
-    itemLowerThird.icon = @"more_lower_third_icon";
-    [self.dataSource addObject:itemLowerThird];
-
-    MoreMenuItem * itemPoll = [[MoreMenuItem alloc] init];
-    itemPoll.type = kTagMoreMenuTpye_Feedback;
-    itemPoll.title = @"Feedback";
-    itemPoll.icon = @"more_feedback_icon";
-    [self.dataSource addObject:itemPoll];
-
     MoreMenuItem * itemHand = [[MoreMenuItem alloc] init];
     if ([SimulateStorage shareInstance].isRaiseHand == YES) {
         itemHand.type = kTagMoreMenuTpye_RaiseLowerHand;
@@ -265,30 +251,6 @@
         [self dismissViewControllerAnimated:NO completion:nil];
     }
 #endif
-    else if (item.type == kTagMoreMenuTpye_Feedback) {
-        if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost]) {
-            [[SimulateStorage shareInstance] initFeedbackItem];
-
-            FeedbackSurveyResultViewController * vc = [[FeedbackSurveyResultViewController alloc] init];
-            vc.modalPresentationStyle = UIModalPresentationFullScreen;
-            [self dismissViewControllerAnimated:NO completion:^{
-                [self.presentingViewController presentViewController:vc animated:YES completion:nil];
-            }];
-        } else {
-            FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
-            vc.type = FeedbackPopViewTpye_Receive;
-            vc.modalPresentationStyle = UIModalPresentationPageSheet;
-            [self dismissViewControllerAnimated:NO completion:^{
-                [self.presentingViewController presentViewController:vc animated:YES completion:nil];
-            }];
-        }
-    } else if (item.type == kTagMoreMenuTpye_LowerThird) {
-        LowerThirdSettingViewController *vc = [[LowerThirdSettingViewController alloc] init];
-        vc.isPushed = NO;
-        [self dismissViewControllerAnimated:NO completion:^{
-            [self.presentingViewController presentViewController:vc animated:YES completion:nil];
-        }];
-    }
 }
 
 

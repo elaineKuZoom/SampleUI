@@ -44,7 +44,7 @@
 @property (strong, nonatomic) BottomBarView           *bottomView;
 @property (strong, nonatomic) ChatView                *chatView;
 @property (strong, nonatomic) SwitchBtn               *switchShareBtn;
-@property (strong, nonatomic) LowerThirdPanel         *lowerThirdPanel;
+
 @property (strong, nonatomic) DemoTestSubsessionView * subSessionView;
 @property (nonatomic, strong) ZoomView  *fullScreenCanvas;
 
@@ -136,8 +136,6 @@
         self.statisticLabel.frame = CGRectMake(SCREEN_WIDTH - 90 - 16, (IPHONE_X ? Top_Height + SAFE_ZOOM_INSETS : Top_Height), 90, 25);
     }
 
-    [self updateLowerThird];
-
     [self.chatView setNeedsLayout];
 
     [self.controlBarView setNeedsLayout];
@@ -186,7 +184,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     [UISceneOrientationHelper addOrientationChangeObserver:self selector:@selector(onDeviceOrientationChangeNotification:)];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLowerThirdNotification:) name:kLowerThirdSavedNoti object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -303,12 +300,9 @@
         [weakSelf showSessionInfo];
     };
 
-    self.lowerThirdPanel = [[LowerThirdPanel alloc] initWithFrame:CGRectMake(8, CGRectGetMaxY(self.topBarView.frame) + 12, 150, 60)];
-
     [self.view addSubview:_topBarView];
     [self.view addSubview:self.switchShareBtn];
     [self.view addSubview:self.statisticLabel];
-    [self.view addSubview:self.lowerThirdPanel];
 }
 
 - (BottomBarView *)bottomView {
@@ -465,7 +459,6 @@
         [[user getVideoCanvas] subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_LetterBox andResolution:ZoomVideoSDKVideoResolution_Auto];
         [[SDKPiPHelper shared] updatePiPVideoUser:user videoType:ZoomVideoSDKVideoType_VideoData];
     }
-    [self updateLowerThird];
 }
 
 - (void)showSessionInfo {
@@ -690,7 +683,6 @@
     self.fullScreenCanvas.dataType = ZoomVideoSDKVideoType_VideoData;
     [my.getVideoCanvas subscribeWithView:self.fullScreenCanvas aspectMode:ZoomVideoSDKVideoAspect_LetterBox andResolution:ZoomVideoSDKVideoResolution_Auto];
     [[SDKPiPHelper shared] updatePiPVideoUser:my videoType:ZoomVideoSDKVideoType_VideoData];
-    [self updateLowerThird];
 }
 
 - (void)showZoomPasswordAlert:(BOOL)wrongPwd
@@ -1103,7 +1095,6 @@
         }
     }
     self.switchShareBtn.hidden = YES;
-    [self updateLowerThird];
 }
 
 - (void)onShareCanvasSubscribeFailWithUser:(ZoomVideoSDKUser *_Nullable)user view:(UIView *_Nullable)view shareAction:(ZoomVideoSDKShareAction*_Nullable)shareAction {
@@ -1558,8 +1549,6 @@
     if (self.switchShareBtn.sharedUser) {
         self.switchShareBtn.hidden = NO;
     }
-
-    [self updateLowerThird];
 }
 
 - (void)scrollToThumberViewItem:(ViewItem *)item {
@@ -1607,7 +1596,6 @@
             [self viewItemSelected:item];
         }
     }
-    [self updateLowerThird];
 }
 
 - (void)startSpeakerTimer {
@@ -1797,16 +1785,6 @@
                 [SimulateStorage shareInstance].reactionType = reaction_type;
             }
         }
-    } else if (cmd_type == CmdTpye_Feedback_Push) {
-        FeedbackPopViewController * vc = [[FeedbackPopViewController alloc] init];
-        vc.type = FeedbackPopViewTpye_Receive;
-        vc.modalPresentationStyle = UIModalPresentationPageSheet;
-        [self presentViewController:vc animated:YES completion:nil];
-    } else if (cmd_type == CmdTpye_Feedback_Submit) {
-        [[SimulateStorage shareInstance] processFeedbackData:commandContent sendUser:@(sendUser.getUserID)];
-    } else if (cmd_type == CmdTpye_Lowerthird) {
-        [[SimulateStorage shareInstance] addLowerThird:commandContent withUser:sendUser];
-        [self updateLowerThird];
     }
 }
 
@@ -1851,30 +1829,6 @@
 
     if (success)
         [[SimulateStorage shareInstance] sendMyLowerThird];
-}
-
-- (void)onLowerThirdNotification:(NSNotification *)aNotification
-{
-    [self updateLowerThird];
-}
-
-- (void)updateLowerThird
-{
-    if (self.lowerThirdPanel) {
-        if (self.switchShareBtn.hidden) {
-            self.lowerThirdPanel.frame = CGRectMake(8, CGRectGetMaxY(self.topBarView.frame) + 12, 150, 60);
-        } else {
-            self.lowerThirdPanel.frame = CGRectMake(8, CGRectGetMaxY(self.switchShareBtn.frame) + 12, 150, 60);
-        }
-
-        LowerThirdCmd *cmd = [[SimulateStorage shareInstance] getUsersLowerThird:self.fullScreenCanvas.user];
-        if ([SimulateStorage isLowerThirdEnabled] && cmd) {
-            [self.lowerThirdPanel setLowerThird:cmd];
-            self.lowerThirdPanel.hidden = NO;
-        } else {
-            self.lowerThirdPanel.hidden = YES;
-        }
-    }
 }
 
 - (void)handleHideTimer:(NSTimer *)timer {

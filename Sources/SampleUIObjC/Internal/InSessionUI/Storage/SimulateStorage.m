@@ -321,15 +321,6 @@
         case 1:
             cmd_type = CmdTpye_Reaction;
             break;
-        case 2:
-            cmd_type = CmdTpye_Feedback_Push;
-            break;
-        case 3:
-            cmd_type = CmdTpye_Feedback_Submit;
-            break;
-        case 4:
-            cmd_type = CmdTpye_Lowerthird;
-            break;
         default:
             break;
     }
@@ -456,80 +447,6 @@
     [ZOOM_UD synchronize];
 }
 
-- (NSString *)generateFeedbackPushCmdString
-{
-    return @"2";
-}
-
-- (NSString *)generateFeedbackSubmitCmdString:(kTagFeedbackTpye)type
-{
-    NSString *cmdString = nil;
-    switch (type) {
-        case kTagFeedbackTpye_VerySatisfied:
-            cmdString = @"3|verySatisfied";
-            break;
-        case kTagFeedbackTpye_Satisfied:
-            cmdString = @"3|satisfied";
-            break;
-        case kTagFeedbackTpye_Neutral:
-            cmdString = @"3|neutral";
-            break;
-        case kTagFeedbackTpye_Unsatisfied:
-            cmdString = @"3|unsatisfied";
-            break;
-        case kTagFeedbackTpye_VeryUnsatisfied:
-            cmdString = @"3|veryUnsatisfied";
-            break;
-        default:
-            break;
-    }
-    return cmdString;
-}
-
-- (kTagFeedbackTpye)getFeedbackTypeFromCmd:(NSString *)cmdString
-{
-    NSArray *parseArray = [cmdString componentsSeparatedByString:@"|"];
-    if (!parseArray || parseArray.count < 2) {
-        return kTagFeedbackTpye_None;
-    }
-
-    kTagFeedbackTpye type = kTagFeedbackTpye_None;
-    NSString * feedbackString = parseArray[1];
-    if (!feedbackString) return kTagFeedbackTpye_None;
-
-    if ([@"verySatisfied" isEqualToString:feedbackString]) {
-        type = kTagFeedbackTpye_VerySatisfied;
-    } else if ([@"satisfied" isEqualToString:feedbackString]) {
-        type = kTagFeedbackTpye_Satisfied;
-    } else if ([@"neutral" isEqualToString:feedbackString]) {
-        type = kTagFeedbackTpye_Neutral;
-    } else if ([@"unsatisfied" isEqualToString:feedbackString]) {
-        type = kTagFeedbackTpye_Unsatisfied;
-    } else if ([@"veryUnsatisfied" isEqualToString:feedbackString]) {
-        type = kTagFeedbackTpye_VeryUnsatisfied;
-    }
-
-    return type;
-}
-
-- (BOOL)sendFeedbackPushCmd {
-    NSString * cmdString = [self generateFeedbackPushCmdString];
-    if (!cmdString) return NO;
-
-    ZoomVideoSDKError error = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdString receiveUser:nil];
-    NSLog(@"Feedback::sendCommand===>%@",error == Errors_Success ? @"YES" : @"NO");
-    return error == Errors_Success ? YES : NO;
-}
-
-- (BOOL)sendFeedbackSubmitCmd:(kTagFeedbackTpye)type {
-    NSString * cmdString = [self generateFeedbackSubmitCmdString:type];
-    if (!cmdString) return NO;
-
-    ZoomVideoSDKError error = [[[ZoomVideoSDK shareInstance] getCmdChannel] sendCommand:cmdString receiveUser:nil];
-    NSLog(@"Feedback::sendCommand===>%@",error == Errors_Success ? @"YES" : @"NO");
-    return error == Errors_Success ? YES : NO;
-}
-
 - (void)clearUp
 {
     [self.lowerThirdArr removeAllObjects];
@@ -540,79 +457,5 @@
     }
     [self.feedbackSource removeAllObjects];
     self.feedbackSource = nil;
-}
-
-- (void)initFeedbackItem
-{
-    if ([SimulateStorage shareInstance].feedbackSource) {
-        return;
-    }
-
-    [SimulateStorage shareInstance].feedbackSource = [[NSMutableArray alloc] init];
-
-    FeedbackSurvey * itemVerySatisfied = [[FeedbackSurvey alloc] init];
-    itemVerySatisfied.title = @"Very Satisfied";
-    itemVerySatisfied.icon = @"feedback_very_satisfied";
-    itemVerySatisfied.responseCount = 0;
-    itemVerySatisfied.type = kTagFeedbackTpye_VerySatisfied;
-    itemVerySatisfied.responseUserArray = [[NSMutableArray alloc] init];
-    [[SimulateStorage shareInstance].feedbackSource addObject:itemVerySatisfied];
-
-    FeedbackSurvey * itemSatisfied = [[FeedbackSurvey alloc] init];
-    itemSatisfied.title = @"Satisfied";
-    itemSatisfied.icon = @"feedback_satisfied";
-    itemSatisfied.responseCount = 0;
-    itemSatisfied.type = kTagFeedbackTpye_Satisfied;
-    itemSatisfied.responseUserArray = [[NSMutableArray alloc] init];
-    [[SimulateStorage shareInstance].feedbackSource addObject:itemSatisfied];
-
-    FeedbackSurvey * itemNeutral = [[FeedbackSurvey alloc] init];
-    itemNeutral.title = @"Neutral";
-    itemNeutral.icon = @"feedback_neutral";
-    itemNeutral.responseCount = 0;
-    itemNeutral.type = kTagFeedbackTpye_Neutral;
-    itemNeutral.responseUserArray = [[NSMutableArray alloc] init];
-    [[SimulateStorage shareInstance].feedbackSource addObject:itemNeutral];
-
-    FeedbackSurvey * itemUnsatisfied = [[FeedbackSurvey alloc] init];
-    itemUnsatisfied.title = @"Unsatisfied";
-    itemUnsatisfied.icon = @"feedback_unsatisfied";
-    itemUnsatisfied.responseCount = 0;
-    itemUnsatisfied.type = kTagFeedbackTpye_Unsatisfied;
-    itemUnsatisfied.responseUserArray = [[NSMutableArray alloc] init];
-    [[SimulateStorage shareInstance].feedbackSource addObject:itemUnsatisfied];
-
-    FeedbackSurvey * itemVeryUnsatisfied = [[FeedbackSurvey alloc] init];
-    itemVeryUnsatisfied.title = @"Very Unsatisfied";
-    itemVeryUnsatisfied.icon = @"feedback_very_unsatisfied";
-    itemVeryUnsatisfied.responseCount = 0;
-    itemVeryUnsatisfied.type = kTagFeedbackTpye_VeryUnsatisfied;
-    itemVeryUnsatisfied.responseUserArray = [[NSMutableArray alloc] init];
-    [[SimulateStorage shareInstance].feedbackSource addObject:itemVeryUnsatisfied];
-}
-
-- (void)processFeedbackData:(NSString *)cmdString sendUser:(NSNumber *)userId {
-    if (!self.feedbackSource) {
-        return;
-    }
-
-    kTagFeedbackTpye feedbackType = [self getFeedbackTypeFromCmd:cmdString];
-
-    for (FeedbackSurvey *item in self.feedbackSource) {
-        if (item.responseUserArray && [item.responseUserArray containsObject:userId]) {
-            item.responseCount --;
-            [item.responseUserArray removeObject:userId];
-            break;
-        }
-    }
-
-    for (FeedbackSurvey *item in self.feedbackSource) {
-        if (item.responseUserArray && item.type == feedbackType) {
-            item.responseCount ++;
-            [item.responseUserArray addObject:userId];
-        }
-    }
-
-    [[NSNotificationCenter defaultCenter] postNotificationName:Notification_ReceiveFeedbackAction object:nil];
 }
 @end
