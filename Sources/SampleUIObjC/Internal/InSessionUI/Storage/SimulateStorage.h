@@ -45,25 +45,6 @@ typedef NS_ENUM(NSUInteger, kTagReactionTpye) {
 
 - (CmdTpye)getCmdTypeFromCmd:(NSString *)cmdString;
 
-// ****lower Third*******
-+ (BOOL)isLowerThirdEnabled;
-+ (void)enableLowerThird:(BOOL)enable;
-
-+ (NSString *)myLowerThirdName;
-+ (NSString *)myLowerThirdDesc;
-+ (UIColor *)myLowerThirdColor;
-+ (NSInteger)myLowerThirdColorIndex;
-
-+ (NSArray *)colorArray;
-+ (NSString *)lowerThirdColorString:(NSInteger)idx;
-
-+ (BOOL)needBlackColorDesc:(UIColor *)color orColorString:(NSString *)str orIndex:(NSInteger)idx;
-
-- (void)addMyLowerThird:(NSString *)name desc:(NSString *)desc colorIndex:(NSInteger)idx;
-- (void)addLowerThird:(NSString *)lowerString withUser:(ZoomVideoSDKUser *)user;
-- (LowerThirdCmd *)getUsersLowerThird:(ZoomVideoSDKUser *)user;
-- (BOOL)sendMyLowerThird;
-
 // ****reaction*******
 @property (nonatomic, assign)   BOOL                    isRaiseHand;
 @property (nonatomic, assign)   kTagReactionTpye        reactionType;
