@@ -10,7 +10,6 @@
 #import "PreSessionUI/LeftViewCell.h"
 #import "Vender/LGSideMenuController/UIViewController+LGSideMenuController.h"
 #import "PreSessionUI/MainViewController.h"
-#import "InSessionUI/LowerThird/LowerThirdSettingViewController.h"
 
 @interface LeftViewController ()
 
@@ -25,7 +24,6 @@
     if (self) {
         self.titlesArray = @[@"Video SDK Playground",
                              @"",
-                             @"Lower Third",
                              @"Zoom Video SDK",
                              @"Version",
                              @"",
@@ -121,16 +119,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if (indexPath.row == 2) {
-        MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
-        [mainViewController hideLeftViewAnimated:YES completionHandler:nil];
-        UINavigationController *navigationController = (UINavigationController *)mainViewController.rootViewController;
-
-        LowerThirdSettingViewController *vc = [[LowerThirdSettingViewController alloc] init];
-        vc.isPushed = YES;
-        [navigationController pushViewController:vc animated:YES];
-    }
-    else if (indexPath.row == 3) {
+    if (indexPath.row == 3) {
         MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
         [mainViewController hideLeftViewAnimated:YES completionHandler:nil];
 
