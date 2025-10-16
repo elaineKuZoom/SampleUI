@@ -250,11 +250,11 @@
     [self updateFifthViewFrame];
     [self updateSixthViewFrame];
 
-    //UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
+    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
     NSLog(@"[SampleUI] bundle = %@", SampleUIResourcesBundle().bundlePath);
-    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
-                                     inBundle:SampleUIResourcesBundle()
-                compatibleWithTraitCollection:nil];
+//     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
+//                                      inBundle:SampleUIResourcesBundle()
+//                 compatibleWithTraitCollection:nil];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView) - screenSize.width * coverImage.size.height/coverImage.size.width, screenSize.width, screenSize.width * coverImage.size.height/coverImage.size.width);
 
     self.buttonView.frame = CGRectMake(0, _bg_height, screenSize.width, screenSize.height - _bg_height);
@@ -288,9 +288,11 @@
     [self updateSixthViewFrame];
     NSLog(@"[SampleUI] bundle = %@", SampleUIResourcesBundle().bundlePath);
 
-    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
-                                     inBundle:SampleUIResourcesBundle()
-                compatibleWithTraitCollection:nil];
+    UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
+
+//     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
+//                                      inBundle:SampleUIResourcesBundle()
+//                 compatibleWithTraitCollection:nil];
     self.coverImageView.frame = CGRectMake(0, Height(self.bgImageView)-self.view.bounds.size.width * coverImage.size.height/coverImage.size.width, self.view.bounds.size.width, self.view.bounds.size.width * coverImage.size.height/coverImage.size.width);
 
     self.sideButton.frame = CGRectMake(15, Top_Space_Hight, 30, 30);
