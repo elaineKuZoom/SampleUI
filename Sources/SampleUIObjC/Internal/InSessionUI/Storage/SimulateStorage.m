@@ -59,9 +59,6 @@
 {
     NSArray *parseArray = [cmdString componentsSeparatedByString:@"|"];
     if (!parseArray || parseArray.count < 2) {
-        if ([cmdString intValue] == 2) {
-            return CmdTpye_Feedback_Push;
-        }
         return CmdTpye_None;
     }
 
