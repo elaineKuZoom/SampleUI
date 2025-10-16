@@ -33,10 +33,20 @@ static NSString *_defaultAppToken = nil;
 
 + (UIViewController *)makeRootViewController
 {
-    UIViewController *intro = [IntroViewController new];
+    // 1. Intro screen (pre-session)
+    IntroViewController *intro = [IntroViewController new];
+
+    // 2. Navigation container
     BaseNavigationController *nav =
-      [[BaseNavigationController alloc] initWithRootViewController:intro];
-    return nav;
+        [[BaseNavigationController alloc] initWithRootViewController:intro];
+
+    // 3. MainViewController = LGSideMenuController subclass
+    MainViewController *mainViewController = [MainViewController new];
+    mainViewController.rootViewController = nav;
+    [mainViewController setupWithType];
+
+    // ✅ Return full container (the same hierarchy as SceneDelegate)
+    return mainViewController;
 }
 
 + (void)cleanup

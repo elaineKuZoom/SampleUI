@@ -629,17 +629,7 @@
     CreateViewController *vc = [[CreateViewController alloc] init];
     vc.type = ZoomVideoCreateJoinType_Join;
 
-    MainViewController *mainViewController = nil;
-    if ([self respondsToSelector:@selector(sideMenuController)]) {
-        mainViewController = [self performSelector:@selector(sideMenuController)];
-    }
-    if (!mainViewController && [self isKindOfClass:NSClassFromString(@"MainViewController")]) {
-        mainViewController = (MainViewController *)self;
-    }
-    // fallback if still nil
-    if (!mainViewController) {
-        mainViewController = [MainViewController new];
-    }
+    MainViewController *mainViewController = (MainViewController *)self.sideMenuController;
     UINavigationController *navigationController = (UINavigationController *)mainViewController.rootViewController;
     [navigationController pushViewController:vc animated:YES];
 }
