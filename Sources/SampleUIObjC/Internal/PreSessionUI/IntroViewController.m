@@ -251,6 +251,7 @@
     [self updateSixthViewFrame];
 
     //UIImage *coverImage = [UIImage imageNamed:@"cover_bg"];
+    NSLog(@"[SampleUI] bundle = %@", SampleUIResourcesBundle().bundlePath);
     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
                                      inBundle:SampleUIResourcesBundle()
                 compatibleWithTraitCollection:nil];
@@ -285,6 +286,7 @@
     [self updateForthViewFrame];
     [self updateFifthViewFrame];
     [self updateSixthViewFrame];
+    NSLog(@"[SampleUI] bundle = %@", SampleUIResourcesBundle().bundlePath);
 
     UIImage *coverImage = [UIImage imageNamed:@"cover_bg"
                                      inBundle:SampleUIResourcesBundle()
