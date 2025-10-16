@@ -62,9 +62,6 @@
 @property (nonatomic, strong) UILabel *statisticLabel;
 
 
-@property (strong, nonatomic) MessageAssembler *assembler;
-
-
 @property (nonatomic, strong)ZoomVideoSDKSubSessionParticipant* currentParticipant;
 @end
 
@@ -441,8 +438,6 @@
     [self.avatarArr removeAllObjects];
 
     [self stopUpdateTimer];
-
-    [[SimulateStorage shareInstance] clearUp];
 
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -1194,9 +1189,6 @@
 
 - (void)onUserHostChanged:(ZoomVideoSDKUserHelper * _Nullable)helper users:(ZoomVideoSDKUser * _Nullable)user
 {
-    if ([[[[ZoomVideoSDK shareInstance] getSession] getMySelf] isHost]) {
-        [[SimulateStorage shareInstance] initFeedbackItem];
-    }
 }
 
 - (void)onMultiCameraStreamStatusChanged:(ZoomVideoSDKMultiCameraStreamStatus)status parentUser:(ZoomVideoSDKUser *)user videoCanvas:(ZoomVideoSDKVideoCanvas *)videoCanvas
@@ -1826,9 +1818,6 @@
 - (void)onCmdChannelConnectResult:(BOOL)success
 {
     NSLog(@"[onCmdChannelConnectResult] result:%@",@(success));
-
-    if (success)
-        [[SimulateStorage shareInstance] sendMyLowerThird];
 }
 
 - (void)handleHideTimer:(NSTimer *)timer {
