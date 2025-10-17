@@ -551,7 +551,6 @@
 
                                                     if (@available(iOS 12.0, *)) {
                                                         RPSystemBroadcastPickerView *broadcastView = [[RPSystemBroadcastPickerView alloc] init];
-                                                        broadcastView.preferredExtension = @"group.test.sdk";
                                                         broadcastView.tag = kBroadcastPickerTag;
                                                         [self.view addSubview:broadcastView];
                                                         [self sendTouchDownEventToBroadcastButton];
