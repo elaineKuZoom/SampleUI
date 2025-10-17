@@ -270,16 +270,6 @@
                                                                   [[ZoomVideoSDK shareInstance] leaveSession:YES];
                                                               }]];
         }
-        if (self.fullScreenCanvas.isBroadcastStreamingViewer) {
-            [alertController addAction:[UIAlertAction actionWithTitle:@"leaveStreaming"
-                                                                style:UIAlertActionStyleDefault
-                                                              handler:^(UIAlertAction *action) {
-                self.fullScreenCanvas.isBroadcastStreamingViewer = NO;
-                [[[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper] leaveStreaming];
-                [weakSelf dismissViewControllerAnimated:YES completion:nil];
-            }]];
-
-        }
 
         [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         }]];
@@ -1320,42 +1310,6 @@
     NSLog(@"Fun：%s --- line %d, userId:%@, shareType:%@",__FUNCTION__,__LINE__, @(user.getUserID), @(shareAction.getShareType));
 }
 
-#pragma mark Whiteboard -
-
-#if !TARGET_OS_VISION
-- (void)onWhiteboardExported:(ZoomVideoSDKWhiteboardExportFormatType)format data:(NSData*)data {
-    NSLog(@"%s format:%@ %@ ",__FUNCTION__,@(format),data);
-    switch (format) {
-        case ZoomVideoSDKWhiteboardExport_Format_PDF:
-        {
-            NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-            NSString *tmpath = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"whiteboard_%d.pdf",arc4random()%100000]];
-            if([data writeToFile:tmpath atomically:YES]) {
-                [self exportPDFToFilesApp:tmpath];
-            }
-        }
-            break;
-        default:
-            break;
-    }
-}
-#endif
-
-
-#if !TARGET_OS_VISION
--(void)onUserWhiteboardShareStatusChanged:(ZoomVideoSDKUser *)user whiteboardheler:(ZoomVideoSDKWhiteboardHelper*)whiteboardHelper {
-    NSLog(@"%s user:%@ %@ ",__FUNCTION__,@(user.getWhiteboardStatus),whiteboardHelper);
-    if (user.getWhiteboardStatus == ZoomVideoSDKWhiteboardStatus_Started) {
-        self.controlBarView.backgroundColor = [UIColor blackColor];
-        [[[ZoomVideoSDK shareInstance] getWhiteboardHelper] subscribeWhiteboard:self];
-    }
-    else {
-        [[[ZoomVideoSDK shareInstance] getWhiteboardHelper] unSubscribeWhiteboard];
-    }
-    [self.view bringSubviewToFront:self.controlBarView];
-}
-#endif
-
 #pragma mark -sub session -
 - (void)onSubSessionStatusChanged:(ZoomVideoSDKSubSessionStatus)status subSession:(NSArray <ZoomVideoSDKSubSessionKit*>* _Nonnull)pSubSessionKitList {
     NSLog(@"%s  %@  %@ ",__FUNCTION__,@(status) ,pSubSessionKitList.description);
@@ -1452,22 +1406,6 @@
 }
 - (void)onGetBroadcastControlStatus:(BOOL)bSuccess status:(ZoomVideoSDKBroadcastControlStatus)status  {
     NSLog(@"--- %s  %@  %@ ",__func__,@(bSuccess),@(status));
-}
-- (void)onStreamingJoinStatusChanged:(ZoomVideoSDKStreamingJoinStatus)status  {
-    NSLog(@"--- %s  %@  ",__func__,@(status));
-    switch (status) {
-        case ZoomVideoSDKStreamingJoinStatus_Joined:
-        {
-            self.fullScreenCanvas.isBroadcastStreamingViewer = YES;
-        }
-            break;
-
-        case ZoomVideoSDKStreamingJoinStatus_Left:
-
-            break;
-        default:
-            break;
-    }
 }
 
 
