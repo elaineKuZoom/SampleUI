@@ -1388,27 +1388,6 @@
 }
 
 
-#pragma mark - Broadcast
-
-- (void)onStartBroadcastResponse:(BOOL)bSuccess channelID:(NSString* _Nonnull)channelID  {
-    NSLog(@"--- %s  %@  %@ ",__func__,@(bSuccess),channelID);
-    if (bSuccess) {
-        [_controlBarView.broadcastChannelIDs addObject:channelID];
-    }
-}
-
-
-- (void)onStopBroadcastResponse:(BOOL)bSuccess  {
-    NSLog(@"--- %s  %@  ",__func__,@(bSuccess));
-    if (_controlBarView.broadcastChannelIDs.count > 0) {
-        [_controlBarView.broadcastChannelIDs removeLastObject];
-    }
-}
-- (void)onGetBroadcastControlStatus:(BOOL)bSuccess status:(ZoomVideoSDKBroadcastControlStatus)status  {
-    NSLog(@"--- %s  %@  %@ ",__func__,@(bSuccess),@(status));
-}
-
-
 #pragma mark - ChatInputViewDelegate -
 - (void)sendAction:(NSString *)chatString
 {
