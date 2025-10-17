@@ -472,22 +472,6 @@ typedef NS_ENUM(NSInteger, ZoomVideoRendererType) {
 }
 
 - (void)onCreateClicked:(UIButton *)sender {
-    if (self.steamingJoinTF.text.length != 0) {
-        ZoomVideoSDKStreamingJoinContext *streamingJoinContext = [[ZoomVideoSDKStreamingJoinContext alloc]init];
-        streamingJoinContext.token = self.tokenTF.text.length > 0 ? self.tokenTF.text : [SampleUIBootstrap defaultAppToken];
-        streamingJoinContext.channelID = self.steamingJoinTF.text;
-
-        ZoomVideoSDKBroadcastStreamingViewerHelper *steamingViewerHelper =  [[ZoomVideoSDK shareInstance] getBroadcastStreamingViewerHelper];
-        ZoomVideoSDKError ret = [steamingViewerHelper joinStreaming:streamingJoinContext];
-        NSLog(@"----- %s  joinStreaming: %@ ",__FUNCTION__,@(ret));
-        if (self.rendererType == ZoomVideoRendererType_Zoom_Canvas) {
-            //Present Session Video View
-            CanvasViewController * sessionVC = [[CanvasViewController alloc] init];
-            sessionVC.modalPresentationStyle = UIModalPresentationFullScreen;
-            [self presentViewController:sessionVC animated:YES completion:nil];
-        }
-        return;
-    }
 
     if (_sessionNameTF.text.length == 0) {
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
