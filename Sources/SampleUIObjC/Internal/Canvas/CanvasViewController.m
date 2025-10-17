@@ -7,6 +7,7 @@
 //
 
 #import "SampleUI.h"
+#import "SampleUIBootstrap.h"
 #import <ReplayKit/ReplayKit.h>
 #import "CanvasViewController.h"
 #import "UISceneOrientationHelper.h"
@@ -551,7 +552,7 @@
 
                                                     if (@available(iOS 12.0, *)) {
                                                         RPSystemBroadcastPickerView *broadcastView = [[RPSystemBroadcastPickerView alloc] init];
-                                                        broadcastView.preferredExtension = @"com.zoom.example.videosdktest.TestAppScreenShare";
+                                                        broadcastView.preferredExtension = [SampleUIBootstrap screenShareBundleId];
                                                         broadcastView.tag = kBroadcastPickerTag;
                                                         [self.view addSubview:broadcastView];
                                                         [self sendTouchDownEventToBroadcastButton];

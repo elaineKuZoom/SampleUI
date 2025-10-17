@@ -135,49 +135,9 @@
             }];
         }
     }
-    else if (indexPath.row == 7) {
-        [self showInitAlert:cell];
-    }
     else if (indexPath.row == 8) {
         [self unInitialize];
     }
-}
-
-- (void)showInitAlert:(id)sender
-{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Init SDK"
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = @"please input domain";
-    }];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"OK"]
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction * _Nonnull action) {
-        NSString *domain = @"";
-        NSString *tfText = alertController.textFields.firstObject.text;
-        if (tfText.length <= 0 || !([tfText hasPrefix:@"http://"] || [tfText hasPrefix:@"https://"])) {
-            domain = @"zoom.us";
-        } else {
-            domain = tfText;
-        }
-
-        [self initZoomSDK:domain];
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
-
-    UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-    if (popover)
-    {
-        UIButton *btn = (UIButton*)sender;
-        popover.sourceView = btn;
-        popover.sourceRect = btn.bounds;
-        popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-    }
-    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 
@@ -185,39 +145,5 @@
 {
     ZoomVideoSDKError ret = [[ZoomVideoSDK shareInstance] cleanup];
     NSLog(@"[ZoomVideoSDK] cleanup =====>%@", ret == Errors_Success ? @"Success" : @(ret));
-}
-
-- (void)initZoomSDK:(NSString *)domain
-{
-    ZoomVideoSDKInitParams *context = [[ZoomVideoSDKInitParams alloc] init];
-    context.domain = domain;
-    /**
-     * if you need use screen share feature, Here are a few things to note:
-     * <1> Create your own app groupId on the Apple Developer Web site, and fill the group ID in this file and in the file SampleHandler.mm
-     * <2> Create an "App Groups" Capability in the main project target and the screenshare target, and select the groupId correctly.
-     * <3> If you can't select groupId correctly in "App Groups" Capability, Please check files of ZoomVideoSample.entitlements and ZoomVideoSDKScreenShare.entitlements, need to configure the correct group id. etc:
-     *   <key>com.apple.security.application-groups</key>
-         <array>
-             <string> your group id </string>
-         </array
-     *
-     * For details, please refer: https://marketplace.zoom.us/docs/sdk/video/ios/advanced/screen-share
-     *
-     * if you don't need screen share feature, appGroupId can fill an empty string, or delete the bottom line. And delete ZoomVideoSDKScreenShare target.
-     */
-    context.appGroupId = @"group.test.sdk"; // please input group id from the Apple Developer Web site.
-    context.enableLog = YES;
-//    context.logFilePrefix = @"";
-//    context.videoRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
-//    context.shareRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
-//    context.audioRawdataMemoryMode = ZoomVideoSDKRawDataMemoryModeHeap;
-
-//    NSString *speakerFilePath = [[NSBundle mainBundle] pathForResource:@"test" ofType:@"mp3"];
-//    if (speakerFilePath.length != 0) {
-//        context.extendParam.speakerTestFilePath = speakerFilePath;
-//    }
-
-    ZoomVideoSDKError ret = [[ZoomVideoSDK shareInstance] initialize:context];
-    NSLog(@"[ZoomVideoSDK] initialize =====>%@", ret == Errors_Success ? @"Success" : @(ret));
 }
 @end

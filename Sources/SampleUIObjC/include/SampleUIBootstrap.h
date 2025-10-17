@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Get the default app token.
 + (nullable NSString *)defaultAppToken;
 
+/// Set the screen share bundle Id (optional, for screen share).
++ (void)setScreenShareBundleId:(nullable NSString *)bundleId;
+
+/// Get the screen share bundle Id
++ (nullable NSString *)screenShareBundleId;
+
 /// Create the root UI your sample shows (Intro inside BaseNavigationController).
 + (UIViewController *)makeRootViewController;
 

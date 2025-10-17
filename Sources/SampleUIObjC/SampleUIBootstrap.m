@@ -8,6 +8,7 @@
 @implementation SampleUIBootstrap
 
 static NSString *_defaultAppToken = nil;
+static NSString *_screenShareBundleId = nil;
 
 + (void)setDefaultAppToken:(NSString *)token {
     _defaultAppToken = token;
@@ -15,6 +16,16 @@ static NSString *_defaultAppToken = nil;
 
 + (NSString *)defaultAppToken {
     return _defaultAppToken;
+}
+
+/// Set the screen share bundle Id (optional, for screen share).
++ (void)setScreenShareBundleId:(nullable NSString *)bundleId {
+    _screenShareBundleId = bundleId;
+}
+
+/// Get the screen share bundle Id
++ (nullable NSString *)screenShareBundleId {
+    return _screenShareBundleId;
 }
 
 + (void)configureWithDomain:(NSString *)domain
