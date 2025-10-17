@@ -551,6 +551,7 @@
 
                                                     if (@available(iOS 12.0, *)) {
                                                         RPSystemBroadcastPickerView *broadcastView = [[RPSystemBroadcastPickerView alloc] init];
+                                                        broadcastView.preferredExtension = @"com.zoom.example.videosdktest.TestAppScreenShare";
                                                         broadcastView.tag = kBroadcastPickerTag;
                                                         [self.view addSubview:broadcastView];
                                                         [self sendTouchDownEventToBroadcastButton];
