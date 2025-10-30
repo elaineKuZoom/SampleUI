@@ -45,8 +45,8 @@ let package = Package(
        dependencies: [
           "ZoomVideoSDKScreenShare"
        ],
-        path: "Sources/ZoomVideoSDKScreenShareSupport",
-        publicHeadersPath: "include"
+       path: "Sources/ZoomVideoSDKScreenShareSupport",
+       publicHeadersPath: "include"
     ),
     .target(
       name: "SampleUI",
