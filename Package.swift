@@ -21,7 +21,7 @@ let package = Package(
     .binaryTarget(
       name: "ZoomVideoSDKScreenShare",
       url: "https://github.com/zoom/videosdk-ios/releases/download/v2.3.5/ZoomVideoSDKScreenShare.xcframework.zip",
-      checksum: "f8e2163ca8855f3019823f9792b80df162bcd67346dd44fc92cc3e80674b7667"
+      checksum: "3674e3860d921a77a39506387b62fcdfce6ad448e135c43cb834b7f600abebd2"
     ),
 
     .target(
