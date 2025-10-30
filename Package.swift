@@ -29,6 +29,7 @@ let package = Package(
       dependencies: [
         "ZoomVideoSDK",
         "CptShare",
+        "ZoomVideoSDKScreenShare",
       ],
       path: "Sources/SampleUIObjC",
       publicHeadersPath: "include",
@@ -41,7 +42,6 @@ let package = Package(
       name: "SampleUI",
       dependencies: [
       	"SampleUIObjC",
-      	"ZoomVideoSDKScreenShare",
       ],
       path: "Sources/SampleUI",
       resources: [.process("Resources")]
