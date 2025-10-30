@@ -6,7 +6,10 @@ let package = Package(
   name: "SampleUI",
   defaultLocalization: "en",
   platforms: [.iOS(.v13)],
-  products: [.library(name: "SampleUI", targets: ["SampleUI"])],
+  products: [
+    .library(name: "SampleUI", targets: ["SampleUI"]),
+    .library(name: "ZoomVideoSDKScreenShareSupport", targets: ["ZoomVideoSDKScreenShareSupport"])
+  ],
   targets: [
     .binaryTarget(
       name: "ZoomVideoSDK",
@@ -29,7 +32,6 @@ let package = Package(
       dependencies: [
         "ZoomVideoSDK",
         "CptShare",
-        "ZoomVideoSDKScreenShare",
       ],
       path: "Sources/SampleUIObjC",
       publicHeadersPath: "include",
@@ -39,18 +41,17 @@ let package = Package(
       ]
     ),
     .target(
-      name: "ZoomVideoSDKScreenShareSupport",
-      dependencies: [
-        "ZoomVideoSDKScreenShare"
-      ],
-      path: "Sources/ZoomVideoSDKScreenShareSupport",
-      publicHeadersPath: "include"
+       name: "ZoomVideoSDKScreenShareSupport",
+       dependencies: [
+          "ZoomVideoSDKScreenShare"
+       ],
+        path: "Sources/ZoomVideoSDKScreenShareSupport",
+        publicHeadersPath: "include"
     ),
     .target(
       name: "SampleUI",
       dependencies: [
       	"SampleUIObjC",
-        "ZoomVideoSDKScreenShareSupport",
       ],
       path: "Sources/SampleUI",
       resources: [.process("Resources")]
